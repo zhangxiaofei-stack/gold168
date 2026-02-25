@@ -40,6 +40,14 @@
             font-size: 1.5rem;
             font-weight: bold;
             text-decoration: none;
+            display: flex; /* 为了能让logo图片和文字在同一行对齐 */
+            align-items: center; /* 垂直居中 */
+        }
+        /* --- 新增：Logo图片样式 --- */
+        .logo-image {
+            height: 40px; /* 调整高度以适应导航栏 */
+            margin-right: 10px; /* 给图片和文字之间留出空间 */
+            vertical-align: middle; /* 垂直居中对齐 */
         }
         .nav-menu {
             display: flex;
@@ -125,13 +133,13 @@
             margin-bottom: 1rem;
         }
         
-        /* --- 新增：服务卡片图片样式 --- */
+        /* --- 修改：服务卡片图片样式 - 更大，方形 --- */
         .service-icon {
-            width: 80px;
-            height: 80px;
+            width: 260px; /* 增加宽度 */
+            height: 120px; /* 增加高度，与宽度相同以形成方形 */
             margin: 0 auto 1rem; /* 居中，下方留空 */
-            border-radius: 50%; /* 圆形头像效果 */
-            object-fit: cover; /* 保持图片比例填充 */
+            /* border-radius: 50%; 如果你还想要圆形效果，保留这行；如果要方形，删除这行 */
+            object-fit: cover; /* 保持图片比例填充，确保图片不变形且填满方形区域 */
         }
 
         /* --- 新增：定义摇摆动画 --- */
@@ -258,6 +266,7 @@
     <!-- 导航栏 -->
     <nav id="navbar"> <!-- ID 用于JS选择器 -->
         <div class="nav-container">
+            <!-- 添加 Logo -->
             <a href="#home" class="logo">Gold168工作室</a>
             <ul class="nav-menu">
                 <li><a href="#home">首页</a></li>
@@ -283,19 +292,19 @@
             <h2>我们的服务</h2>
             <div class="services-grid">
                 <div class="service-card">
-                    <!-- --- 新增：服务图标 --- -->
+                    <!-- --- 修改：服务图标 - 更大，方形 --- -->
                     <img src="./20260224193709_370_37.png" class="service-icon">
                     <h3>API跟单软件</h3>
                     <p>提供API级别跟单软件，不同券商的 MT4/5 账号，相互跟单喊单，毫秒级并发处理。私有化部署，数据保存在客户的电脑上，与传统社区跟单模式不同，独享计算资源，保障数据安全与运行效率。</p>
                 </div>
                 <div class="service-card">
-                    <!-- --- 新增：服务图标 --- -->
+                    <!-- --- 修改：服务图标 - 更大，方形 --- -->
                     <img src="./2026-02-24_193908_309.png"  class="service-icon">
                     <h3>价差套利软件</h3>
                     <p>提供多对账户价差套利系统和单对账号价差套利UI自动化两个版本。单对账号价差套利UI自动化直接操作MT客户端，有效防止风控。</p>
                 </div>
                 <div class="service-card">
-                    <!-- --- 新增：服务图标 --- -->
+                    <!-- --- 修改：服务图标 - 更大，方形 --- -->
                     <img src="./20260224194040_371_37.png" class="service-icon">
                     <h3>策略编写</h3>
                     <p>提供各式MT4/MT5策略编写服务。</p>
