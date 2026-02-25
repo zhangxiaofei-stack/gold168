@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold168工作室</title>
+    <style>
+        /* 基础重置和全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* 导航栏 */
+        nav {
+            background-color: #2c3e50;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s;
+        }
+        .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* 头部横幅 */
+        .hero {
+            background: linear-gradient(rgba(26, 188, 156, 0.7), rgba(22, 160, 133, 0.7)), url('./LIFENGYELEI206963620260214140018.png') no-repeat center center fixed; /* 使用图片作为背景，并添加半透明遮罩 */
+            background-size: cover; /* 让背景图片覆盖整个区域 */
+            color: white;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-top: 60px; /* 为固定导航栏留出空间 */
+        }
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0; /* 初始隐藏 */
+            transform: translateY(20px); /* 初始位置略低 */
+            animation: fadeInUp 1s ease-out forwards; /* 加载时执行一次动画 */
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: auto;
+            opacity: 0; /* 初始隐藏 */
+            transform: translateY(20px); /* 初始位置略低 */
+            animation: fadeInUp 1s ease-out 0.3s forwards; /* 延迟执行动画 */
+        }
+
+        /* 内容区域 */
+        section {
+            padding: 2rem 2rem; /* 增加上下间距 */
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            color: #2c3e50;
+        }
+
+        /* 服务卡片 - 用于进入动画 */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .service-card {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            opacity: 0; /* 初始隐藏 */
+            transform: translateY(30px); /* 初始位置略低 */
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            cursor: pointer; /* 显示手型光标，提示可交互 */
+        }
+        .service-card.visible { /* 定义可见时的样式 */
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .service-card h3 {
+            color: #1abc9c;
+            margin-bottom: 1rem;
+        }
+        
+        /* --- 新增：服务卡片图片样式 --- */
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem; /* 居中，下方留空 */
+            border-radius: 50%; /* 圆形头像效果 */
+            object-fit: cover; /* 保持图片比例填充 */
+        }
+
+        /* --- 新增：定义摇摆动画 --- */
+        @keyframes wobble {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-5px) rotate(-3deg);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-5px) rotate(3deg);
+            }
+        }
+
+        /* --- 新增：服务卡片悬停效果 --- */
+        .service-card:hover {
+            /* 在原有进入动画的基础上添加悬停动画 */
+            transform: translateY(0) scale(1.05); /* 先恢复Y轴位置，然后轻微放大 */
+            animation: wobble 0.5s ease-in-out; /* 应用摇摆动画 */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* 悬停时增加阴影 */
+        }
+
+
+        /* 关于我们 */
+        .about {
+            background-color: #ecf0f1;
+        }
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+        .about-text {
+            flex: 1;
+        }
+        .about-text p {
+             opacity: 0; /* 初始隐藏 */
+            transform: translateX(-30px); /* 初始位置偏左 */
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .about-text p.visible { /* 定义可见时的样式 */
+            opacity: 1;
+            transform: translateX(0);
+        }
+        /* --- 修改：关于区域的图片样式 --- */
+        .about-image {
+            flex: 1;
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden; /* 隐藏超出边界的部分 */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保持图片比例填充 */
+        }
+
+        /* 客户案例 */
+        .case-study {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .case-item {
+            background-color: white;
+            width: 80%;
+            max-width: 800px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            opacity: 0; /* 初始隐藏 */
+            transform: scale(0.95); /* 初始缩小 */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .case-item.visible { /* 定义可见时的样式 */
+            opacity: 1;
+            transform: scale(1);
+        }
+        /* --- 新增：案例项目图片样式 --- */
+        .case-image {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .case-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 页脚 */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        /* 动画定义 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 导航栏 -->
+    <nav id="navbar"> <!-- ID 用于JS选择器 -->
+        <div class="nav-container">
+            <a href="#home" class="logo">Gold168工作室</a>
+            <ul class="nav-menu">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#services">服务</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#cases">案例</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 头部横幅 -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>欢迎来到 Gold168工作室</h1>
+            <p>我们致力于提供卓越的产品与服务，助力您的业务腾飞。</p>
+        </div>
+    </section>
+
+    <!-- 服务 -->
+    <section id="services">
+        <div class="container">
+            <h2>我们的服务</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <!-- --- 新增：服务图标 --- -->
+                    <img src="./20260224193709_370_37.png" class="service-icon">
+                    <h3>API跟单软件</h3>
+                    <p>提供API级别跟单软件，不同券商的 MT4/5 账号，相互跟单喊单，毫秒级并发处理。私有化部署，数据保存在客户的电脑上，与传统社区跟单模式不同，独享计算资源，保障数据安全与运行效率。</p>
+                </div>
+                <div class="service-card">
+                    <!-- --- 新增：服务图标 --- -->
+                    <img src="./2026-02-24_193908_309.png"  class="service-icon">
+                    <h3>价差套利软件</h3>
+                    <p>提供多对账户价差套利系统和单对账号价差套利UI自动化两个版本。单对账号价差套利UI自动化直接操作MT客户端，有效防止风控。</p>
+                </div>
+                <div class="service-card">
+                    <!-- --- 新增：服务图标 --- -->
+                    <img src="./20260224194040_371_37.png" class="service-icon">
+                    <h3>策略编写</h3>
+                    <p>提供各式MT4/MT5策略编写服务。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我们 -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>关于我们</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Gold168工作室 成立于 2020年，专注于 外汇/数字货币行业软件开发。我们拥有一支经验丰富、充满激情的团队，始终以客户需求为导向，不断创新，追求卓越。</p>
+                    <p>我们的使命是 运用前沿技术和创新思维，为客户创造卓越的软件解决方案，赋能其业务增长与数字化转型，同时激发团队潜能，构建可持续发展的科技未来。我们的愿景是 成为值得信赖的技术伙伴，通过领先的软件工程能力，驱动各行各业的变革，让技术的力量惠及更多人，成就客户、员工与社会的共同繁荣。</p>
+                </div>
+                <!-- --- 修改：使用img标签替换div --- -->
+                <div class="about-image">
+                    <img src="./3a796ad62a65d72a8a73e8b9676efc073493262939654283.jpg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 客户案例 -->
+    <section id="cases">
+        <div class="container">
+            <h2>客户案例</h2>
+            <div class="case-study">
+                <div class="case-item">
+                    <!-- --- 新增：案例图片 --- -->
+                    <div class="case-image">
+                        <img src="./20260224192037_367_37.png">
+                    </div>
+                    <h3>早盘交易系统</h3>
+                    <p>客户定制，自动打漏洞的软件，打过的券商超过百余家，利润超百万美金。</p>
+                </div>
+                <div class="case-item">
+                     <!-- --- 新增：案例图片 --- -->
+                     <div class="case-image">
+                        <img src="./20260224192355_368_37.png">
+                    </div>
+                    <h3>跟单社区</h3>
+                    <p>客户定制开发一款网页版跟单社区。</p>
+                </div>
+                <div class="case-item">
+                     <!-- --- 新增：案例图片 --- -->
+                     <div class="case-image">
+                        <img src="./20260224192648_369_37.png">
+                    </div>
+                    <h3>方达跟单</h3>
+                    <p>客户定制开发基于方达交易的一款跟单软件。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们 (这里可以是一个表单或信息) -->
+    <section id="contact">
+        <!-- 可以添加联系表单 -->
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>&copy; 2026 Gold168工作室. 保留所有权利.</p>
+        <p>地址: 浙江省宁波市象山县 | 微信: jackGold168</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // 1. 平滑滚动功能
+            const navLinks = document.querySelectorAll('nav a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault(); // 阻止默认的锚点跳转行为
+
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 70, // 减去导航栏高度，使定位更精确
+                            behavior: 'smooth' // 启用平滑滚动
+                        });
+                    }
+                });
+            });
+
+            // 2. 滚动进入动画功能
+            const observerOptions = {
+                threshold: 0.1, // 当元素10%进入视口时触发回调
+                rootMargin: '0px 0px -50px 0px' // 提前50px触发
+            };
+
+            const observerCallback = function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible'); // 添加可见类
+                    }
+                    // 注意：这里没有移除'visible'类，因为一旦进入视口，动画就完成了。
+                });
+            };
+
+            const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+            // 观察需要动画的元素
+            document.querySelectorAll('.service-card').forEach(card => observer.observe(card));
+            document.querySelectorAll('.about-text p, .about-image').forEach(el => observer.observe(el));
+            document.querySelectorAll('.case-item').forEach(item => observer.observe(item));
+
+        });
+    </script>
+
+</body>
+</html>
