@@ -15,10 +15,11 @@
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
             color: #333;
+            /* 移除PC端的额外底部内边距 */
         }
 
-        /* 导航栏 */
-        nav {
+        /* PC端顶部导航栏 */
+        nav.desktop-nav {
             background-color: #2c3e50;
             padding: 1rem 0;
             position: fixed;
@@ -64,17 +65,54 @@
             border-radius: 4px;
         }
 
+        /* 手机端底部导航栏 */
+        nav.mobile-nav {
+            display: none; /* 默认隐藏 */
+            background-color: #2c3e50;
+            padding: 0.75rem 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        .mobile-nav .nav-container {
+            display: flex;
+            justify-content: space-around; /* 平均分布 */
+            padding: 0;
+        }
+        .mobile-nav .nav-menu {
+            display: flex;
+            width: 100%;
+            justify-content: space-around; /* 平均分布菜单项 */
+        }
+        .mobile-nav .nav-menu li {
+            flex: 1; /* 每个菜单项平分宽度 */
+            text-align: center; /* 文字居中 */
+        }
+        .mobile-nav .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 0.5rem; /* 调整垂直内边距以增加点击热区 */
+            display: block; /* 使链接占据整个列表项空间 */
+            transition: background-color 0.3s;
+        }
+        .mobile-nav .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
         /* 头部横幅 */
         .hero {
-            background: linear-gradient(rgba(26, 188, 156, 0.7), rgba(22, 160, 133, 0.7)), url('./LIFENGYELEI206963620260214140018.png') no-repeat center center fixed; /* 使用图片作为背景，并添加半透明遮罩 */
-            background-size: cover; /* 让背景图片覆盖整个区域 */
+            background: linear-gradient(rgba(26, 188, 156, 0.7), rgba(22, 160, 133, 0.7)), url('./LIFENGYELEI206963620260214140018.png') no-repeat center center;
+            background-size: cover;
             color: white;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            margin-top: 60px; /* 为固定导航栏留出空间 */
+            margin-top: 60px; /* 为PC端顶部固定导航栏留出空间 */
         }
         .hero-content h1 {
             font-size: 3rem;
@@ -239,12 +277,30 @@
             object-fit: cover;
         }
 
-        /* 页脚 */
-        footer {
+        /* --- 新增：手机端联系信息样式 --- */
+        .mobile-contact-info {
+            display: none; /* PC端默认隐藏 */
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 1rem; /* 调整内边距 */
+        }
+        .mobile-contact-info p {
+            margin: 0.25rem 0; /* 调整段落间距 */
+        }
+        .mobile-contact-info .highlight {
+            font-weight: bold;
+            color: #1abc9c; /* 使用主题色高亮 */
+        }
+
+
+        /* PC端页脚 */
+        footer.pc-footer {
             background-color: #2c3e50;
             color: white;
             text-align: center;
             padding: 1.5rem;
+            display: block; /* PC端默认显示 */
         }
 
         /* 动画定义 */
@@ -259,12 +315,94 @@
             }
         }
 
+        /* --- 响应式设计 --- */
+        @media screen and (max-width: 768px) {
+            
+            /* 隐藏PC端导航，显示手机端导航 */
+            nav.desktop-nav {
+                display: none;
+            }
+            nav.mobile-nav {
+                display: block;
+            }
+
+            /* 隐藏PC端页脚，显示手机端联系信息 */
+            footer.pc-footer {
+                display: none;
+            }
+            .mobile-contact-info {
+                display: block; /* 手机端显示 */
+            }
+
+            /* 为手机端添加底部内边距，防止内容被固定导航栏遮挡 */
+            body {
+                padding-bottom: 60px; /* 底部导航栏高度 */
+            }
+
+            /* 调整头部横幅文字大小 */
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            .hero-content p {
+                font-size: 1rem;
+                padding: 0 1rem; /* 左右留边 */
+            }
+            .hero {
+                margin-top: 0; /* 移除PC端导航的上边距 */
+                height: calc(100vh - 60px); /* 高度减去底部导航栏的高度 */
+            }
+
+            /* 调整容器内边距 */
+            section {
+                padding: 1.5rem 1rem;
+            }
+
+            /* 关于我们部分改为上下排列 */
+            .about-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .about-image {
+                height: 200px; /* 适当减小图片高度 */
+            }
+
+            /* 服务网格调整为单列 */
+            .services-grid {
+                grid-template-columns: 1fr; /* 每行只显示一个卡片 */
+                gap: 1.5rem; /* 调整间距 */
+            }
+            .service-card {
+                padding: 1.5rem; /* 调整卡片内部间距 */
+            }
+            /* 调整服务图标大小 */
+            .service-icon {
+                width: 200px; /* 适当减小 */
+                height: 100px; /* 适当减小 */
+            }
+
+            /* 调整标题字体大小 */
+            h2 {
+                font-size: 1.75rem;
+            }
+
+            /* 调整案例项宽度 */
+            .case-item {
+                 width: 95%; /* 占满更多宽度 */
+                 max-width: 100%; /* 确保最大宽度 */
+                 padding: 1.5rem; /* 调整内部间距 */
+            }
+            /* 调整案例图片高度 */
+            .case-image {
+                height: 150px; /* 适当减小 */
+            }
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- 导航栏 -->
-    <nav id="navbar"> <!-- ID 用于JS选择器 -->
+    <!-- PC端顶部导航栏 -->
+    <nav class="desktop-nav">
         <div class="nav-container">
             <!-- 添加 Logo -->
             <a href="#home" class="logo">Gold168工作室</a>
@@ -274,6 +412,18 @@
                 <li><a href="#about">关于</a></li>
                 <li><a href="#cases">案例</a></li>
                 <li><a href="#contact">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 手机端底部导航栏 -->
+    <nav class="mobile-nav">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#services">服务</a></li>
+                <li><a href="#cases">案例</a></li>
+                <!-- 关于和联系按钮被移除 -->
             </ul>
         </div>
     </nav>
@@ -363,13 +513,14 @@
         </div>
     </section>
 
-    <!-- 联系我们 (这里可以是一个表单或信息) -->
-    <section id="contact">
-        <!-- 可以添加联系表单 -->
-    </section>
+    <!-- --- 新增：手机端联系信息块，紧跟在案例之后 --- -->
+    <div class="mobile-contact-info">
+        <p><span class="highlight">地址:</span> 浙江省宁波市象山县</p>
+        <p><span class="highlight">微信:</span> jackGold168</p>
+    </div>
 
-    <!-- 页脚 -->
-    <footer>
+    <!-- PC端页脚 -->
+    <footer class="pc-footer">
         <p>&copy; 2026 Gold168工作室. 保留所有权利.</p>
         <p>地址: 浙江省宁波市象山县 | 微信: jackGold168</p>
     </footer>
@@ -377,9 +528,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            // 1. 平滑滚动功能
-            const navLinks = document.querySelectorAll('nav a[href^="#"]');
-            navLinks.forEach(link => {
+            // 1. 平滑滚动功能 (为两个导航栏都添加监听)
+            const allNavLinks = document.querySelectorAll('nav a[href^="#"]');
+            allNavLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault(); // 阻止默认的锚点跳转行为
 
@@ -387,8 +538,12 @@
                     const targetSection = document.querySelector(targetId);
 
                     if (targetSection) {
+                        // 根据屏幕宽度判断是PC还是Mobile，调整offsetTop
+                        const isMobile = window.innerWidth <= 768;
+                        const navBarHeight = isMobile ? 60 : 70; // Mobile nav ~60px, Desktop nav ~70px
+                        
                         window.scrollTo({
-                            top: targetSection.offsetTop - 70, // 减去导航栏高度，使定位更精确
+                            top: targetSection.offsetTop - navBarHeight,
                             behavior: 'smooth' // 启用平滑滚动
                         });
                     }
