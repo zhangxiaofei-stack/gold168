@@ -101,7 +101,17 @@
             background-color: #34495e;
             border-radius: 4px;
         }
+.service-link {
+    text-decoration: none; /* 去除链接下划线 */
+    color: inherit; /* 继承父元素的颜色，通常是黑色 */
+    display: block; /* 使其表现为块级元素，可以包含整个卡片 */
+}
 
+/* 可选：为整个卡片链接添加一个微妙的悬停效果，增强交互感 */
+.service-link:hover {
+    transform: scale(1.02); /* 轻微放大 */
+    transition: transform 0.2s ease-in-out;
+}
         /* 头部横幅 */
         .hero {
             background: linear-gradient(rgba(26, 188, 156, 0.7), rgba(22, 160, 133, 0.7)), url('./LIFENGYELEI206963620260214140018.png') no-repeat center center;
@@ -440,25 +450,25 @@
     <section id="services">
         <div class="container">
             <h2>我们的服务</h2>
-            <div class="services-grid">
+            <div class="services-grid"><a href="api-following.html" class="service-link"> 
                 <div class="service-card">
                     <!-- --- 修改：服务图标 - 更大，方形 --- -->
                     <img src="./20260224193709_370_37.png" class="service-icon">
                     <h3>API跟单软件</h3>
                     <p>提供API级别跟单软件，不同券商的 MT4/5 账号，相互跟单喊单，毫秒级并发处理。私有化部署，数据保存在客户的电脑上，与传统社区跟单模式不同，独享计算资源，保障数据安全与运行效率。</p>
-                </div>
-                <div class="service-card">
+                </div> </a>
+                <div class="service-card"><a href="api-arbitrage.html" class="service-link"> 
                     <!-- --- 修改：服务图标 - 更大，方形 --- -->
-                    <img src="./2026-02-24_193908_309.png"  class="service-icon">
+                    <img src="./20260304193209_389_37.png"  class="service-icon">
                     <h3>价差套利软件</h3>
                     <p>提供多对账户价差套利系统和单对账号价差套利UI自动化两个版本。单对账号价差套利UI自动化直接操作MT客户端，有效防止风控。</p>
-                </div>
-                <div class="service-card">
+                </div></a>
+                <div class="service-card"><a href="ea.html" class="service-link"> 
                     <!-- --- 修改：服务图标 - 更大，方形 --- -->
                     <img src="./20260224194040_371_37.png" class="service-icon">
                     <h3>策略编写</h3>
                     <p>提供各式MT4/MT5策略编写服务。</p>
-                </div>
+                </div></a>
             </div>
         </div>
     </section>
