@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API跟单软件 - Gold168工作室</title>
+	<link rel="icon" href="logo.png" type="image/png">
+    <title>API跟单软件 - 大湾软件工作室</title>
     <style>
-        /* 基础重置和全局样式 */
+		.logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -144,6 +157,57 @@
             font-weight: normal;
         }
 
+        /* --- 新增：价格卡片容器 --- */
+        .pricing-cards {
+            display: flex;
+            gap: 1.5rem; /* 卡片间距 */
+            justify-content: center; /* 居中对齐 */
+            margin: 2.5rem 0;
+            flex-wrap: wrap; /* 允许换行，适配移动端 */
+        }
+
+        /* --- 新增：单个价格卡片样式 --- */
+        .price-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            flex: 1; /* 均匀分配空间 */
+            min-width: 200px; /* 设置最小宽度，防止卡片过窄 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .price-card:hover {
+            transform: translateY(-5px); /* 鼠标悬停时上浮效果 */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .price-card.featured {
+            /* 如果想突出某个套餐，可以给它加上featured类 */
+            /* border: 2px solid #27ae60; */
+            background-color: #f8fff9; /* 稍微不同的背景色 */
+        }
+        .price-title {
+            color: #2c3e50;
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .price-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 0.5rem 0;
+        }
+        .price-duration {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        .price-note {
+            font-size: 0.8rem;
+            color: #bdc3c7;
+            margin-top: 0.5rem;
+        }
+
         /* 特性列表 */
         .features-list {
             list-style: none;
@@ -261,6 +325,19 @@
                 font-size: 1rem;
             }
 
+            /* --- 调整移动端价格卡片 --- */
+            .pricing-cards {
+                flex-direction: column; /* 在移动端堆叠显示 */
+                align-items: stretch; /* 让卡片拉伸以填充容器 */
+            }
+            .price-card {
+                min-width: unset; /* 取消最小宽度限制 */
+                margin-bottom: 1rem; /* 添加卡片间距 */
+            }
+            .price-value {
+                font-size: 1.8rem; /* 调整字体大小 */
+            }
+
             .tech-table, .tech-table tbody, .tech-table tr, .tech-table td {
                 display: block;
                 width: 100%;
@@ -306,7 +383,9 @@
     <!-- PC端顶部导航栏 -->
     <nav class="desktop-nav">
         <div class="nav-container">
-            <a href="index.html" class="logo">Gold168工作室</a>
+			<a href="index.html" class="logo">
+				<img src="logo.png" alt="Logo" class="logo-image" style="border-radius: 50%;">大湾软件工作室
+			</a>
             <ul class="nav-menu">
                 <li><a href="index.html#home">首页</a></li>
                 <li><a href="index.html#services">服务</a></li>
@@ -342,6 +421,29 @@
                   <img src="./20260304180930_386_37.png" alt="API跟单软件界面" class="carousel-image">
                         <img src="./20260304180931_387_37.png" alt="API跟单软件界面" class="carousel-image">
                         <img src="./20260304180933_388_37.png" alt="API跟单软件界面" class="carousel-image">
+                    </div>
+                </div>
+
+                <!-- --- 新增：价格信息卡片组 --- -->
+                <h3 style="text-align: center;">订阅方案</h3>
+                <div class="pricing-cards">
+                    <div class="price-card">
+                        <div class="price-title">年度基础版</div>
+                        <div class="price-value">¥1999</div>
+                        <div class="price-duration">有效期 12 个月</div>
+                        <p class="price-note">功能齐备，包含所有跟单功能</p>
+                    </div>
+                    <div class="price-card featured">
+                        <div class="price-title">年度VIP版</div>
+                        <div class="price-value">¥2299</div>
+                        <div class="price-duration">有效期 15 个月</div>
+                        <p class="price-note">在12个月基础上赠送3个月使用</p>
+                    </div>
+                    <div class="price-card">
+                        <div class="price-title">年度SVIP版</div>
+                        <div class="price-value">¥2599</div>
+                        <div class="price-duration">有效期 18 个月</div>
+                        <p class="price-note">在12个月基础上赠送6个月使用</p>
                     </div>
                 </div>
 
@@ -391,6 +493,7 @@
 
                 <h3>联系我们</h3>
                 <p>如果您希望了解更多关于API跟单软件的信息，或需要定制化开发，请随时通过微信与我们取得联系。</p>
+                <p><strong>购买方式</strong>：请联系客服微信 <code>jackGold168</code> 进行咨询和购买。</p>
             </div>
         </div>
     </section>

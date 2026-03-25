@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold168工作室</title>
+	<link rel="icon" href="logo.png" type="image/png">
+    <title>大湾软件工作室</title>
     <style>
-        /* 基础重置和全局样式 */
+		.logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -158,7 +171,8 @@
         /* 服务卡片 - 用于进入动画 */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            /* 修改为两列，自动换行成多行 */
+            grid-template-columns: repeat(2, 1fr); 
             gap: 2rem;
         }
         .service-card {
@@ -415,7 +429,9 @@
     <nav class="desktop-nav">
         <div class="nav-container">
             <!-- 添加 Logo -->
-            <a href="#home" class="logo">Gold168工作室</a>
+			<a href="index.html" class="logo">
+				<img src="logo.png" alt="Logo" class="logo-image" style="border-radius: 50%;">大湾软件工作室
+			</a>
             <ul class="nav-menu">
                 <li><a href="#home">首页</a></li>
                 <li><a href="#services">服务</a></li>
@@ -433,7 +449,7 @@
                 <li><a href="#home">首页</a></li>
                 <li><a href="#services">服务</a></li>
                 <li><a href="#cases">案例</a></li>
-                <!-- 关于和联系按钮被移除 -->
+
             </ul>
         </div>
     </nav>
@@ -441,7 +457,7 @@
     <!-- 头部横幅 -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1>欢迎来到 Gold168工作室</h1>
+            <h1>欢迎来到 大湾软件工作室</h1>
             <p>我们致力于提供卓越的产品与服务，助力您的业务腾飞。</p>
         </div>
     </section>
@@ -450,25 +466,35 @@
     <section id="services">
         <div class="container">
             <h2>我们的服务</h2>
-            <div class="services-grid"><a href="api-following.html" class="service-link"> 
-                <div class="service-card">
-                    <!-- --- 修改：服务图标 - 更大，方形 --- -->
-                    <img src="./20260224193709_370_37.png" class="service-icon">
-                    <h3>API跟单软件</h3>
-                    <p>提供API级别跟单软件，不同券商的 MT4/5 账号，相互跟单喊单，毫秒级并发处理。私有化部署，数据保存在客户的电脑上，与传统社区跟单模式不同，独享计算资源，保障数据安全与运行效率。</p>
-                </div> </a>
-                <div class="service-card"><a href="api-arbitrage.html" class="service-link"> 
-                    <!-- --- 修改：服务图标 - 更大，方形 --- -->
-                    <img src="./20260304193209_389_37.png"  class="service-icon">
-                    <h3>价差套利软件</h3>
-                    <p>提供多对账户价差套利系统和单对账号价差套利UI自动化两个版本。单对账号价差套利UI自动化直接操作MT客户端，有效防止风控。</p>
-                </div></a>
-                <div class="service-card"><a href="ea.html" class="service-link"> 
-                    <!-- --- 修改：服务图标 - 更大，方形 --- -->
-                    <img src="./20260224194040_371_37.png" class="service-icon">
-                    <h3>策略编写</h3>
-                    <p>提供各式MT4/MT5策略编写服务。</p>
-                </div></a>
+            <div class="services-grid">
+                <a href="api-arbitrage.html" class="service-link"> 
+                    <div class="service-card">
+                        <img src="./qqqq2026-03-23 220128.png" class="service-icon">
+                        <h3>价差套利多平台多账户</h3>
+                        <p>一套系统可运行至少5对以上账号，不用购买多套系统，超低延迟订单执行，确保最佳成交价格，私有化部署，数据保存在客户的电脑上，独享计算资源，保障数据安全与运行效率</p>
+                    </div> 
+                </a>
+                <a href="ui-arbitrage.html" class="service-link"> 
+                    <div class="service-card">
+                        <img src="./20260304193209_389_37.png"  class="service-icon">
+                        <h3>价差套利UI自动化</h3>
+                        <p>直接操作迈达克客户端下单，不依赖API，从根本上杜绝检测EA和API的风险。程序模拟真人操作MT4/MT5软件，订单通过真实点击完成，与手动交易完全一致</p>
+                    </div>
+                </a>
+                <a href="api-following.html" class="service-link"> 
+                    <div class="service-card">
+                       <img src="./20260224193709_370_37.png" class="service-icon">
+                        <h3>API跟单软件</h3>
+                       <p>提供API级别跟单软件，不同券商的 MT4/5 账号，相互跟单喊单，毫秒级并发处理。私有化部署，数据保存在客户的电脑上，独享计算资源，保障数据安全与运行效率。</p>
+                    </div>
+                </a>
+                <a href="api-cd.html" class="service-link"> 
+                    <div class="service-card">
+                        <img src="./2026-03-25 102853.png" class="service-icon">
+                        <h3>防冲单系统</h3>
+                       <p>提供防冲单系统，推盘首选，可有效防止券商冲单造成推盘失败，毫秒级并发处理。私有化部署，数据保存在客户的电脑上，独享计算资源，保障数据安全与运行效率。</p>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
@@ -479,7 +505,7 @@
             <h2>关于我们</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p>Gold168工作室 成立于 2020年，专注于 外汇/数字货币行业软件开发。我们拥有一支经验丰富、充满激情的团队，始终以客户需求为导向，不断创新，追求卓越。</p>
+                    <p>大湾软件工作室 成立于 2020年，专注于 外汇/数字货币行业软件开发。我们拥有一支经验丰富、充满激情的团队，始终以客户需求为导向，不断创新，追求卓越。</p>
                     <p>我们的使命是 运用前沿技术和创新思维，为客户创造卓越的软件解决方案，赋能其业务增长与数字化转型，同时激发团队潜能，构建可持续发展的科技未来。我们的愿景是 成为值得信赖的技术伙伴，通过领先的软件工程能力，驱动各行各业的变革，让技术的力量惠及更多人，成就客户、员工与社会的共同繁荣。</p>
                 </div>
                 <!-- --- 修改：使用img标签替换div --- -->
@@ -531,7 +557,7 @@
 
     <!-- PC端页脚 -->
     <footer class="pc-footer">
-        <p>&copy; 2026 Gold168工作室. 保留所有权利.</p>
+        <p>&copy; 2026 大湾软件工作室. 保留所有权利.</p>
         <p>地址: 浙江省宁波市象山县 | 微信: jackGold168</p>
     </footer>
 
