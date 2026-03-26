@@ -376,6 +376,74 @@
             }
         }
 
+        /* --- 新增：模态对话框样式 --- */
+        /* 模态背景遮罩 */
+        .modal {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            z-index: 2000; /* 确保在所有元素之上 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+            backdrop-filter: blur(5px); /* 背景模糊效果 (可选) */
+        }
+
+        /* 模态内容卡片 */
+        .modal-content {
+            background-color: white;
+            margin: 15% auto; /* 从顶部15%开始居中 */
+            padding: 2rem;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px; /* 最大宽度 */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out; /* 弹出动画 */
+        }
+
+        /* 关闭按钮 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+
+        /* 微信号图片样式 */
+        .wechat-qrcode {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 微信号文字 */
+        .wechat-id {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 1rem;
+        }
+
+        /* 模态对话框淡入动画 */
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
     </style>
 </head>
 <body>
@@ -391,7 +459,8 @@
                 <li><a href="index.html#services">服务</a></li>
                 <li><a href="index.html#about">关于</a></li>
                 <li><a href="index.html#cases">案例</a></li>
-                <li><a href="index.html#contact">联系</a></li>
+                <li><a href="#" id="contact-link">联系</a></li> <!-- 修改 -->
+				<li><a href="usage.html">使用说明</a></li> 
             </ul>
         </div>
     </nav>
@@ -402,7 +471,9 @@
             <ul class="nav-menu">
                 <li><a href="index.html#home">首页</a></li>
                 <li><a href="index.html#services">服务</a></li>
+				<li><a href="usage.html">说明</a></li> 
                 <li><a href="index.html#cases">案例</a></li>
+                <li><a href="#" id="mobile-contact-link">联系</a></li> <!-- 修改 -->
             </ul>
         </div>
     </nav>
@@ -494,6 +565,7 @@
                 <h3>联系我们</h3>
                 <p>如果您希望了解更多关于API跟单软件的信息，或需要定制化开发，请随时通过微信与我们取得联系。</p>
                 <p><strong>购买方式</strong>：请联系客服微信 <code>jackGold168</code> 进行咨询和购买。</p>
+                <p><strong>或点击下方按钮：</strong> <button id="contact-btn-page">联系客服</button></p> <!-- 新增按钮 -->
             </div>
         </div>
     </section>
@@ -511,11 +583,22 @@
         <p>地址: 浙江省宁波市象山县 | 微信: jackGold168</p>
     </footer>
 
+    <!-- --- 新增：模态对话框 HTML 结构 --- -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>联系我们</h2>
+            <p>请扫描下方二维码添加微信</p>
+            <img src="./88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode"> <!-- 请替换为您真实的二维码图片路径 -->
+            <p class="wechat-id">微信号: jackGold168</p>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
             // 1. 平滑滚动功能 (为两个导航栏都添加监听)
-            const allNavLinks = document.querySelectorAll('nav a[href^="#"]');
+            const allNavLinks = document.querySelectorAll('nav a[href^="#"]:not(#contact-link):not(#mobile-contact-link)'); // 排除联系按钮
             allNavLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault(); // 阻止默认的锚点跳转行为
@@ -550,6 +633,41 @@
 
             // 每3秒自动切换图片
             setInterval(showNextImage, 5000);
+
+            // --- 2. 新增：模态对话框功能 ---
+            const contactModal = document.getElementById("contactModal");
+            const contactLink = document.getElementById("contact-link");
+            const mobileContactLink = document.getElementById("mobile-contact-link");
+            const contactBtnPage = document.getElementById("contact-btn-page"); // 获取页面上的按钮
+            const span = document.getElementsByClassName("close")[0];
+
+            // 当点击“联系”链接或页面按钮时，打开模态框
+            contactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+            mobileContactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+            // 为页面上的按钮也添加点击事件
+            contactBtnPage.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+
+            // 当点击关闭按钮 (x) 时，关闭模态框
+            span.onclick = function() {
+                contactModal.style.display = "none";
+            }
+
+            // 当点击模态框外部区域时，关闭模态框
+            window.onclick = function(event) {
+                if (event.target == contactModal) {
+                    contactModal.style.display = "none";
+                }
+            }
+
         });
     </script>
 

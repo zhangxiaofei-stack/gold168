@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="icon" href="logo.png" type="image/png">
-    <title>大湾软件工作室</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>使用说明 - 大湾软件工作室</title>
     <style>
-		.logo {
+        /* 
+            所有公共样式 (从您的 index.html 复制而来)
+        */
+        .logo {
             display: flex;
             align-items: center;
             color: white;
@@ -28,7 +31,6 @@
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
             color: #333;
-            /* 移除PC端的额外底部内边距 */
         }
 
         /* PC端顶部导航栏 */
@@ -48,20 +50,6 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 2rem;
-        }
-        .logo {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-decoration: none;
-            display: flex; /* 为了能让logo图片和文字在同一行对齐 */
-            align-items: center; /* 垂直居中 */
-        }
-        /* --- 新增：Logo图片样式 --- */
-        .logo-image {
-            height: 40px; /* 调整高度以适应导航栏 */
-            margin-right: 10px; /* 给图片和文字之间留出空间 */
-            vertical-align: middle; /* 垂直居中对齐 */
         }
         .nav-menu {
             display: flex;
@@ -114,17 +102,7 @@
             background-color: #34495e;
             border-radius: 4px;
         }
-.service-link {
-    text-decoration: none; /* 去除链接下划线 */
-    color: inherit; /* 继承父元素的颜色，通常是黑色 */
-    display: block; /* 使其表现为块级元素，可以包含整个卡片 */
-}
 
-/* 可选：为整个卡片链接添加一个微妙的悬停效果，增强交互感 */
-.service-link:hover {
-    transform: scale(1.02); /* 轻微放大 */
-    transition: transform 0.2s ease-in-out;
-}
         /* 头部横幅 */
         .hero {
             background: linear-gradient(rgba(26, 188, 156, 0.7), rgba(22, 160, 133, 0.7)), url('./LIFENGYELEI206963620260214140018.png') no-repeat center center;
@@ -168,66 +146,88 @@
             color: #2c3e50;
         }
 
-        /* 服务卡片 - 用于进入动画 */
-        .services-grid {
-            display: grid;
-            /* 修改为两列，自动换行成多行 */
-            grid-template-columns: repeat(2, 1fr); 
+        /* --- 新增：使用说明页面的主布局 --- */
+        .usage-container {
+            display: flex;
             gap: 2rem;
+            min-height: 500px; /* 确保内容区有最小高度 */
         }
-        .service-card {
-            background-color: #f8f9fa;
+
+        .sidebar {
+            width: 250px; /* 固定侧边栏宽度 */
+            background-color: #ecf0f1;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: sticky; /* 滚动时固定在顶部 */
+            top: 80px; /* 留出导航栏的空间 */
+            height: fit-content; /* 高度随内容变化 */
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .sidebar-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-list a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #34495e;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar-list a:hover,
+        .sidebar-list a.active {
+            background-color: #1abc9c;
+            color: white;
+        }
+
+        .content-panel {
+            flex: 1; /* 内容区占据剩余空间 */
+            background-color: white;
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            text-align: center;
-            opacity: 0; /* 初始隐藏 */
-            transform: translateY(30px); /* 初始位置略低 */
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-            cursor: pointer; /* 显示手型光标，提示可交互 */
         }
-        .service-card.visible { /* 定义可见时的样式 */
-            opacity: 1;
-            transform: translateY(0);
+
+        .content-section {
+            display: none; /* 默认全部隐藏 */
         }
-        .service-card h3 {
-            color: #1abc9c;
+
+        .content-section.active {
+            display: block; /* 显示激活的那一个 */
+            animation: fadeIn 0.5s ease-in-out; /* 添加淡入动画 */
+        }
+
+        /* --- 内容区内的图片样式 --- */
+        .content-panel img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* --- 内容区内的列表样式 --- */
+        .content-panel ul, .content-panel ol {
+            margin-left: 1.5rem;
             margin-bottom: 1rem;
         }
-        
-        /* --- 修改：服务卡片图片样式 - 更大，方形 --- */
-        .service-icon {
-            width: 260px; /* 增加宽度 */
-            height: 120px; /* 增加高度，与宽度相同以形成方形 */
-            margin: 0 auto 1rem; /* 居中，下方留空 */
-            /* border-radius: 50%; 如果你还想要圆形效果，保留这行；如果要方形，删除这行 */
-            object-fit: cover; /* 保持图片比例填充，确保图片不变形且填满方形区域 */
+        .content-panel li {
+            margin-bottom: 0.5rem;
         }
-
-        /* --- 新增：定义摇摆动画 --- */
-        @keyframes wobble {
-            0%, 100% {
-                transform: translateY(0) rotate(0deg);
-            }
-            25% {
-                transform: translateY(-5px) rotate(-3deg);
-            }
-            50% {
-                transform: translateY(0) rotate(0deg);
-            }
-            75% {
-                transform: translateY(-5px) rotate(3deg);
-            }
-        }
-
-        /* --- 新增：服务卡片悬停效果 --- */
-        .service-card:hover {
-            /* 在原有进入动画的基础上添加悬停动画 */
-            transform: translateY(0) scale(1.05); /* 先恢复Y轴位置，然后轻微放大 */
-            animation: wobble 0.5s ease-in-out; /* 应用摇摆动画 */
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* 悬停时增加阴影 */
-        }
-
 
         /* 关于我们 */
         .about {
@@ -282,7 +282,7 @@
             transform: scale(0.95); /* 初始缩小 */
             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
-        .case-item.visible { /* 定义可见时的样式 */
+        .case-item.visible { /* 定义可见时 the style */
             opacity: 1;
             transform: scale(1);
         }
@@ -339,6 +339,11 @@
             }
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         /* --- 响应式设计 --- */
         @media screen and (max-width: 768px) {
             
@@ -390,18 +395,20 @@
                 height: 200px; /* 适当减小图片高度 */
             }
 
-            /* 服务网格调整为单列 */
-            .services-grid {
-                grid-template-columns: 1fr; /* 每行只显示一个卡片 */
-                gap: 1.5rem; /* 调整间距 */
+            /* --- 修改：手机端使用说明布局为上下结构 --- */
+            .usage-container {
+                flex-direction: column; /* 改为列布局 */
             }
-            .service-card {
-                padding: 1.5rem; /* 调整卡片内部间距 */
+
+            .sidebar {
+                width: 100%; /* 侧边栏宽度占满 */
+                order: 2; /* 在手机上，列表放在下面 */
+                position: static; /* 取消粘性定位 */
+                margin-top: 1.5rem;
             }
-            /* 调整服务图标大小 */
-            .service-icon {
-                width: 200px; /* 适当减小 */
-                height: 100px; /* 适当减小 */
+
+            .content-panel {
+                order: 1; /* 在手机上，内容区放在上面 */
             }
 
             /* 调整标题字体大小 */
@@ -419,6 +426,12 @@
             .case-image {
                 height: 150px; /* 适当减小 */
             }
+        }
+
+        /* --- 新增：使用说明页面的自定义头部背景 --- */
+        .usage-hero {
+            background: linear-gradient(rgba(46, 204, 113, 0.7), rgba(39, 174, 96, 0.7)), url('./LIFENGYELEI206963620260214140018.png') no-repeat center center;
+            background-size: cover;
         }
 
         /* --- 新增：模态对话框样式 --- */
@@ -496,16 +509,17 @@
     <!-- PC端顶部导航栏 -->
     <nav class="desktop-nav">
         <div class="nav-container">
+            <!-- 添加 Logo -->
 			<a href="index.html" class="logo">
 				<img src="logo.png" alt="Logo" class="logo-image" style="border-radius: 50%;">大湾软件工作室
 			</a>
             <ul class="nav-menu">
-                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html">首页</a></li>
                 <li><a href="index.html#services">服务</a></li>
                 <li><a href="index.html#about">关于</a></li>
                 <li><a href="index.html#cases">案例</a></li>
-                <li><a href="#" id="contact-link">联系</a></li> <!-- 修改：改为#并添加ID -->
-				<li><a href="usage.html">使用说明</a></li> 
+                <li><a href="#" id="contact-link">联系</a></li> <!-- 修改 -->
+                <li><a href="usage.html" class="active">使用说明</a></li> <!-- 当前页面链接，添加active类 -->
             </ul>
         </div>
     </nav>
@@ -514,111 +528,165 @@
     <nav class="mobile-nav">
         <div class="nav-container">
             <ul class="nav-menu">
-                <li><a href="index.html#home">首页</a></li>
-                <li><a href="index.html#services">服务</a></li>
-				<li><a href="usage.html">说明</a></li> 
+                <li><a href="index.html">首页</a></li>
+				<li><a href="index.html#services">服务</a></li>
+                <li><a href="usage.html" class="active">说明</a></li> <!-- 手机端也添加active类 -->
                 <li><a href="index.html#cases">案例</a></li>
-                <li><a href="#" id="mobile-contact-link">联系</a></li> <!-- 为手机端也添加 -->
+                <li><a href="#" id="mobile-contact-link">联系</a></li> <!-- 修改 -->
             </ul>
         </div>
     </nav>
 
-    <!-- 头部横幅 -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>欢迎来到 大湾软件工作室</h1>
-            <p>我们致力于提供卓越的产品与服务，助力您的业务腾飞。</p>
-        </div>
-    </section>
-
-    <!-- 服务 -->
-    <section id="services">
+    <!-- 详细的使用说明内容 -->
+    <section id="detailed-usage">
         <div class="container">
-            <h2>我们的服务</h2>
-            <div class="services-grid">
-                <a href="api-arbitrage.html" class="service-link"> 
-                    <div class="service-card">
-                        <img src="./qqqq2026-03-23 220128.png" class="service-icon">
-                        <h3>价差套利多平台多账户</h3>
-                        <p>一套系统可运行至少5对以上账号，不用购买多套系统，超低延迟订单执行，确保最佳成交价格，私有化部署，数据保存在客户的电脑上，独享计算资源，保障数据安全与运行效率</p>
-                    </div> 
-                </a>
-                <a href="ui-arbitrage.html" class="service-link"> 
-                    <div class="service-card">
-                        <img src="./20260304193209_389_37.png"  class="service-icon">
-                        <h3>价差套利UI自动化</h3>
-                        <p>直接操作迈达克客户端下单，不依赖API，从根本上杜绝检测EA和API的风险。程序模拟真人操作MT4/MT5软件，订单通过真实点击完成，与手动交易完全一致</p>
+            <h2>详细使用说明</h2>
+            <div class="usage-container">
+                <!-- 左侧列表 -->
+                <aside class="sidebar">
+                    <h3>系统列表</h3>
+                    <ul class="sidebar-list">
+                        <li><a href="#" data-target="arbitrage-multi" class="nav-link active">价差套利多平台多账户</a></li>
+                        <li><a href="#" data-target="arbitrage-ui" class="nav-link">价差套利UI自动化</a></li>
+                        <li><a href="#" data-target="api-following" class="nav-link">API跟单软件</a></li>
+              
+                    </ul>
+                </aside>
+
+                <!-- 右侧内容区 -->
+                <main class="content-panel">
+                    <!-- 价差套利多平台多账户 -->
+                    <div id="arbitrage-multi" class="content-section active">
+                        <h3>价差套利多平台多账户 - 使用说明</h3>
+                        <p><strong>第一步：运行环境准备</strong><br>
+                        运行目录下的dotNetFx4.8.exe，如果之前没有安装，运行dotNetFx4.8.exe，直到安装完成，如果之前已经安装，直接退出到第二步。
+						 
+                        </p> <img src="./运行环境1.png" alt="运行环境1"  >
+                        <p><strong>第二步：申请账号</strong><br>
+                        运行目录下的queryip.exe，将机器码发送给客服，获取系统使用权。
+						 <img src="./机器码1.png" alt="机器码1">
+                        </p>
+                        <p><strong>第三步：配置账号，配置策略</strong><br>
+                        打开软件，进入主界面。先添加主账号，再添加对冲账号，然后添加策略，设置交易模块。
+                        </p>
+                        <img src="./配置账号策略1.png" alt="账户配置界面示意图">
+						配置账号的时候，如果没有找到服务器，可以在线搜索
+						<img src="./配置账号策略2.png" alt="账户配置界面示意图">
+						<img src="./配置账号策略3.png" alt="账户配置界面示意图">
+						添加策略的时候，着重添加开仓单量，开仓间隔，持仓时间，开仓平仓能量，手续费，点差这几个参数。
+						<img src="./配置账号策略4.png" alt="账户配置界面示意图">
+						设置交易模块：点击一行。弹出模块设置，配置手数，开仓参数，平仓参数，平仓预期利润
+						<img src="./配置账号策略5.png" alt="账户配置界面示意图">
+                        <p><strong>第四步：配置其他账号</strong><br>
+                        在主界面中，给你预留多少行账号配置的数据表格，就可以配置多少对对冲交易的账号。图中共7行，说明可以配置7对账号
+						<img src="./配置账号策略6.png" alt="账户配置界面示意图">
+                        </p>
+                        <p><strong>第五步：启动与监控</strong><br>
+                        确认所有配置无误后，点击“一键启动”按钮开始运行或者选择一行单独启动一对账号进行交易对冲。通过软件内置的监控面板实时观察各账户的持仓、盈亏和交易记录。
+                        </p>
+                        <p><strong>联系我们：</strong> <button id="contact-btn-page">联系客服</button></p> <!-- 新增按钮 -->
                     </div>
-                </a>
-                <a href="api-following.html" class="service-link"> 
-                    <div class="service-card">
-                       <img src="./20260224193709_370_37.png" class="service-icon">
-                        <h3>API跟单软件</h3>
-                       <p>提供API级别跟单软件，不同券商的 MT4/5 账号，相互跟单喊单，毫秒级并发处理。私有化部署，数据保存在客户的电脑上，独享计算资源，保障数据安全与运行效率。</p>
+
+                    <!-- 价差套利UI自动化 -->
+                    <div id="arbitrage-ui" class="content-section">
+                        <h3>价差套利UI自动化 - 使用说明</h3>
+                        <p><strong>第一步：运行环境准备</strong><br>
+                      运行目录下的dotNetFx4.8.exe，如果之前没有安装，运行dotNetFx4.8.exe，直到安装完成，如果之前已经安装，直接退出到第二步。
+                        </p>
+                        <p><strong>第二步：获取系统使用权</strong><br>  
+                        运行目录下的queryip.exe，将机器码发送给客服，获取系统使用权。
+							 <img src="./UI自动化授权.png" alt="UI自动化授权">
+                        </p>
+                        <p><strong>第三步：配置对冲账号</strong><br>
+                          <img src="./UI自动化账号配置.png" alt="UI自动化账号配置">
+                        </p>
+                       
+                        <p><strong>第四步：配置策略</strong><br>  
+                        鼠标右键弹出下拉，点击策略配置
+                        </p> <img src="./UI自动策略弹出.png" alt="UI自动策略弹出">
+					 
+						<ul>
+                            <li>填写开仓参数，平仓参数，预期利润和开仓手数。</li>
+                            <li>填写交易间隔，持仓时间，不要让交易太频繁。</li>
+                            <li>填写开仓能量，平仓能量等</li>
+							<li>填写6个坐标：主账号开空坐标、开多坐标、平仓坐标，对冲账号开空坐标、开多坐标、平仓坐标</li>
+                        </ul>
+						<img src="./UI自动化策略配置.png" alt="UI自动化策略配置.png">
+                        <p><strong>第五步：开始自动化</strong><br>
+                        启动软件，它将模拟鼠标操作，在各个MT4/MT5客户端之间进行下单、平仓等操作。运行过程中，不可和程序抢鼠标。
+                        </p>
+                        <p><strong>联系我们：</strong> <button id="contact-btn-page">联系客服</button></p> <!-- 新增按钮 -->
                     </div>
-                </a>
-                <a href="api-cd.html" class="service-link"> 
-                    <div class="service-card">
-                        <img src="./2026-03-25 102853.png" class="service-icon">
-                        <h3>防冲单系统</h3>
-                       <p>提供防冲单系统，推盘首选，可有效防止券商冲单造成推盘失败，毫秒级并发处理。私有化部署，数据保存在客户的电脑上，独享计算资源，保障数据安全与运行效率。</p>
+
+                    <!-- API跟单软件 -->
+                    <div id="api-following" class="content-section">
+                        <h3>API跟单软件 - 使用说明</h3>
+						<p><strong>第一步：运行环境准备</strong><br>
+                        运行目录下的dotNetFx4.8.exe，如果之前没有安装，运行dotNetFx4.8.exe，直到安装完成，如果之前已经安装，直接退出到第二步。
+						 
+                        </p> <img src="./运行环境_follow.png" alt="运行环境_follow"  >
+                        <p><strong>第二步：获取系统使用权</strong><br>
+                        运行目录下的queryip.exe，将机器码发送给客服，获取系统使用权。
+						 <img src="./机器码_follow.png" alt="机器码_follow">
+                        </p>
+                        <p><strong>第三步：准备交易账户</strong><br>
+                        在开始之前，请确保您已经准备好以下信息：
+                        </p>
+                        <ul>
+                            <li>您的MT4或MT5交易账户的登录凭据（账户号码，密码，服务器，后缀）。</li>
+                            <li>您希望跟随的信号源账户。</li>
+                            <li>一台能够持续运行的电脑或服务器，以保证软件24/7不间断运行。</li>
+                        </ul>
+                        <p><strong>第四步：配置信号账号</strong><br>
+                        首次启动软件后，您需要配置您的信号账号。</p>
+                        <ol>
+                            <li>进入主界面。</li>
+							<li>点击信号配置，鼠标移动到服务器输入框，下拉选项如果没有对应的服务器，点击在线搜索</li>
+							<li>搜索成功后，返回再配置账号，选择对应的服务器，输入账号，密码，后缀，如果需要备注，也可以对账号进行备注，清楚区分</li>
+                            <li>输入成功后，点击一键登录，这样信号就配置成功了。</li>
+                            
+                        </ol>
+                        <img src="./配置信号账号.png" alt="配置信号账号">
+                        <p><strong>第四步：配置跟单账号</strong><br></p>
+                        <ol>
+                            <li>选择一个信号，鼠标右键选择下拉选项->跟单账号配置。</li>
+                            <li>弹出账号配置界面，和信号配置一样。输入账号数据即可</li>
+                        </ol>
+						 <img src="./配置跟单账号.png" alt="配置跟单账号">
+						 跟单账号的界面框和信号账号的配置是一样的。
+						 <img src="./配置跟单账号2.png" alt="配置跟单账号2">
+						<p><strong>第五步：配置跟单</strong><br></p>
+                        <ol>
+                            <li>选择一个跟单账号，点击最后一栏 -> 编辑。</li>
+                            <li>弹出账号配置界面，和信号配置一样。输入账号数据即可</li>
+							<li>这里有个是否启用选项，如果不启用，开仓和平仓都不会跟单</li>
+							<li>如果启用，开仓和平仓都会跟单。还有一个，停止跟单，如果启用状态下，是停止跟单的，开仓不会跟单，但是平仓会跟</li>
+                        </ol>
+						 <img src="./配置跟单.png" alt="配置跟单">
+						 <p><strong>第六步：特殊品种转换</strong><br></p>
+                        <ol>
+                            <li>选择一个跟单账号，右键选择品种转换。</li>
+                            <li>品种转换框，选择对应的喊单品种和跟单的品种</li>
+							<li>保存即可</li>
+                        </ol>
+						 <img src="./品种转换1.png" alt="品种转换1">
+						 <img src="./品种转换2.png" alt="品种转换2">
+					    <p><strong>第七步：系统配置</strong><br></p>
+                        <ol>
+                            <li>合约规格：如果两个账号交易品种的合约量不同，则对合约规格比对打勾</li>
+                            <li>输入漏单检测，时间比对，这个默认即可</li>
+                        </ol>
+						 <img src="./合约大小.png" alt="合约大小">
+						 <p><strong>第八步：配置完成这些后，就可以开启跟单</strong><br></p>
+						 <p><strong>联系我们：</strong> <button id="contact-btn-page">联系客服</button></p> <!-- 新增按钮 -->
+                   
                     </div>
-                </a>
+                </main>
             </div>
         </div>
     </section>
 
-    <!-- 关于我们 -->
-    <section id="about" class="about">
-        <div class="container">
-            <h2>关于我们</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>大湾软件工作室 成立于 2020年，专注于 外汇/数字货币行业软件开发。我们拥有一支经验丰富、充满激情的团队，始终以客户需求为导向，不断创新，追求卓越。</p>
-                    <p>我们的使命是 运用前沿技术和创新思维，为客户创造卓越的软件解决方案，赋能其业务增长与数字化转型，同时激发团队潜能，构建可持续发展的科技未来。我们的愿景是 成为值得信赖的技术伙伴，通过领先的软件工程能力，驱动各行各业的变革，让技术的力量惠及更多人，成就客户、员工与社会的共同繁荣。</p>
-                </div>
-                <!-- --- 修改：使用img标签替换div --- -->
-                <div class="about-image">
-                    <img src="./3a796ad62a65d72a8a73e8b9676efc073493262939654283.jpg">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 客户案例 -->
-    <section id="cases">
-        <div class="container">
-            <h2>客户案例</h2>
-            <div class="case-study">
-                <div class="case-item">
-                    <!-- --- 新增：案例图片 --- -->
-                    <div class="case-image">
-                        <img src="./20260224192037_367_37.png">
-                    </div>
-                    <h3>早盘交易系统</h3>
-                    <p>客户定制，自动打漏洞的软件，打过的券商超过百余家，利润超百万美金。</p>
-                </div>
-                <div class="case-item">
-                     <!-- --- 新增：案例图片 --- -->
-                     <div class="case-image">
-                        <img src="./20260224192355_368_37.png">
-                    </div>
-                    <h3>跟单社区</h3>
-                    <p>客户定制开发一款网页版跟单社区。</p>
-                </div>
-                <div class="case-item">
-                     <!-- --- 新增：案例图片 --- -->
-                     <div class="case-image">
-                        <img src="./20260224192648_369_37.png">
-                    </div>
-                    <h3>方达跟单</h3>
-                    <p>客户定制开发基于方达交易的一款跟单软件。</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- --- 新增：手机端联系信息块，紧跟在案例之后 --- -->
+    <!-- --- 新增：手机端联系信息块 --- -->
     <div class="mobile-contact-info">
         <p><span class="highlight">地址:</span> 浙江省宁波市象山县</p>
         <p><span class="highlight">微信:</span> jackGold168</p>
@@ -636,7 +704,7 @@
             <span class="close">&times;</span>
             <h2>联系我们</h2>
             <p>请扫描下方二维码添加微信</p>
-            <img src="./88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode"> <!-- 请替换为您实际的二维码图片路径 -->
+            <img src="./88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode"> <!-- 请替换为您真实的二维码图片路径 -->
             <p class="wechat-id">微信号: jackGold168</p>
         </div>
     </div>
@@ -644,7 +712,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            // 1. 平滑滚动功能 (为两个导航栏都添加监听)
+            // 1. 平滑滚动功能 (为导航栏添加监听)
             const allNavLinks = document.querySelectorAll('nav a[href^="#"]:not(#contact-link):not(#mobile-contact-link)'); // 排除联系按钮
             allNavLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -666,7 +734,27 @@
                 });
             });
 
-            // 2. 滚动进入动画功能
+            // 2. 左侧列表点击切换右侧内容功能
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('data-target');
+
+                    // 移除所有链接和内容的激活状态
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    contentSections.forEach(s => s.classList.remove('active'));
+
+                    // 为当前点击的链接和对应的内容添加激活状态
+                    this.classList.add('active');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // 3. 滚动进入动画功能 (为案例和关于部分保留)
             const observerOptions = {
                 threshold: 0.1, // 当元素10%进入视口时触发回调
                 rootMargin: '0px 0px -50px 0px' // 提前50px触发
@@ -677,30 +765,34 @@
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible'); // 添加可见类
                     }
-                    // 注意：这里没有移除'visible'类，因为一旦进入视口，动画就完成了。
                 });
             };
 
             const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-            // 观察需要动画的元素
-            document.querySelectorAll('.service-card').forEach(card => observer.observe(card));
+            // 观察需要动画的元素 (这里主要针对页面底部的“关于”和“案例”部分)
             document.querySelectorAll('.about-text p, .about-image').forEach(el => observer.observe(el));
             document.querySelectorAll('.case-item').forEach(item => observer.observe(item));
 
-            // --- 3. 新增：模态对话框功能 ---
+            // --- 4. 新增：模态对话框功能 ---
             const contactModal = document.getElementById("contactModal");
             const contactLink = document.getElementById("contact-link");
             const mobileContactLink = document.getElementById("mobile-contact-link");
+            const contactBtnPage = document.getElementById("contact-btn-page"); // 获取页面上的按钮
             const span = document.getElementsByClassName("close")[0];
 
-            // 当点击“联系”链接时，打开模态框
+            // 当点击“联系”链接或页面按钮时，打开模态框
             contactLink.onclick = function(event) {
-                event.preventDefault(); // 阻止默认行为
+                event.preventDefault();
                 contactModal.style.display = "block";
             }
             mobileContactLink.onclick = function(event) {
-                event.preventDefault(); // 阻止默认行为
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+            // 为页面上的按钮也添加点击事件
+            contactBtnPage.onclick = function(event) {
+                event.preventDefault();
                 contactModal.style.display = "block";
             }
 
