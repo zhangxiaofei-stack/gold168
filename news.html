@@ -115,11 +115,11 @@
             color: #2c3e50;
         }
 
-        /* --- 新闻列表样式 --- */
+        /* --- 新闻列表样式 - 修改为两栏 --- */
         .news-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            display: grid; /* 使用 Grid 布局 */
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); /* 自动适应，每列最小450px */
+            gap: 1.5rem; /* 项目之间的间距 */
         }
         .news-item {
             background-color: #fff;
@@ -202,6 +202,10 @@
             }
             h1 {
                 font-size: 2rem;
+            }
+            /* 在手机端，Grid 回退为单列 */
+            .news-list {
+                grid-template-columns: 1fr; /* 只显示一列 */
             }
             .news-item {
                 margin-bottom: 1rem;
@@ -342,7 +346,7 @@
             </div>
           
             <div class="news-item">
-                <img src="./LIFENGYELEI206963620260214140018.png" alt="新闻配图" class="news-image">
+                <img src="./LIFENGYELEI206963620260214140018.png" alt="公司发布全新一代价差套利引擎" class="news-image">
                 <div class="news-content">
                     <h2 class="news-title">公司发布全新一代价差套利引擎</h2>
                     <div class="news-meta">
@@ -356,7 +360,7 @@
             </div>
 
             <div class="news-item">
-                <img src="./3a796ad62a65d72a8a73e8b9676efc073493262939654283.jpg" alt="新闻配图" class="news-image">
+                <img src="./3a796ad62a65d72a8a73e8b9676efc073493262939654283.jpg" alt="成功为某大型机构客户提供定制化解决方案" class="news-image">
                 <div class="news-content">
                     <h2 class="news-title">成功为某大型机构客户提供定制化解决方案</h2>
                     <div class="news-meta">
@@ -369,6 +373,33 @@
                 </div>
             </div>
 
+            <div class="news-item">
+                <img src="./20260224192037_367_37.png" alt="机缘来了，开发早盘系统" class="news-image">
+                <div class="news-content">
+                    <h2 class="news-title">机缘来了，开发早盘系统</h2>
+                    <div class="news-meta">
+                        <span>大湾软件工作室</span>
+                        <span>2021-09-20</span>
+                    </div>
+                    <p class="news-excerpt">
+                        开发早盘系统，一边开发一边交易。通过系统开发和自主交易，工作室也因此赚取了丰厚利润。
+                    </p>
+                </div>
+            </div>
+			
+            <div class="news-item">
+                <img src="./3a796ad62a65d72a8a73e8b9676efc073493262939654283.jpg" alt="亦步亦趋，工作室正式开业，第一款跟单软件，大世界跟单上线" class="news-image">
+                <div class="news-content">
+                    <h2 class="news-title">亦步亦趋，工作室正式开业，第一款跟单软件，大世界跟单上线</h2>
+                    <div class="news-meta">
+                        <span>大湾软件工作室</span>
+                        <span>2020-02-15</span>
+                    </div>
+                    <p class="news-excerpt">
+                        开发大世界跟单，出来时界面和功能都比较挫，经过5版迭代，终换蓝色飞鹰logo，一直到2023年。期间还开发了Manager 跟单和改单等多款系统。
+                    </p>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -403,7 +434,7 @@
                 item.addEventListener('click', function() {
                     // 这里可以添加点击后的逻辑，例如：
                     // window.location.href = 'news-detail.html?id=' + this.dataset.id;
-                    alert('已点击新闻: ' + this.querySelector('.news-title').textContent);
+                   // alert('已点击新闻: ' + this.querySelector('.news-title').textContent);
                 });
             });
 
