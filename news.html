@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>新闻资讯 - 大湾软件工作室</title>
+    <style>
+        /* --- 重用主站的全局样式 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px; /* 为固定导航栏预留空间 */
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* --- 导航栏样式 (与原主页一致) --- */
+        nav.desktop-nav {
+            background-color: #2c3e50;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s;
+        }
+        .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 手机端底部导航栏 --- */
+        nav.mobile-nav {
+            display: none;
+            background-color: #2c3e50;
+            padding: 0.75rem 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        .mobile-nav .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 0;
+        }
+        .mobile-nav .nav-menu {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+        .mobile-nav .nav-menu li {
+            flex: 1;
+            text-align: center;
+        }
+        .mobile-nav .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 0.5rem;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .mobile-nav .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 主要内容区样式 --- */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            color: #2c3e50;
+        }
+
+        /* --- 新闻列表样式 --- */
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .news-item {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden; /* 防止图片溢出 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .news-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .news-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover; /* 保持比例填充，避免变形 */
+        }
+        .news-content {
+            padding: 1.5rem;
+        }
+        .news-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .news-excerpt {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* --- 页脚样式 (与原主页一致) --- */
+        footer.pc-footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        /* --- 手机端联系信息块 --- */
+        .mobile-contact-info {
+            display: none;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            margin-top: 3rem;
+        }
+        .mobile-contact-info p {
+            margin: 0.25rem 0;
+        }
+        .mobile-contact-info .highlight {
+            font-weight: bold;
+            color: #1abc9c;
+        }
+
+        /* --- 响应式设计 --- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding-top: 0;
+                padding-bottom: 60px; /* 为底部导航栏预留空间 */
+            }
+            nav.desktop-nav {
+                display: none;
+            }
+            nav.mobile-nav {
+                display: block;
+            }
+            .main-content {
+                padding: 0 1rem;
+                margin-top: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .news-item {
+                margin-bottom: 1rem;
+            }
+            .news-image {
+                height: 150px;
+            }
+            .pc-footer {
+                display: none;
+            }
+            .mobile-contact-info {
+                display: block;
+            }
+        }
+
+        /* --- 新增：模态对话框样式 --- */
+        /* 模态背景遮罩 */
+        .modal {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            z-index: 2000; /* 确保在所有元素之上 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+            backdrop-filter: blur(5px); /* 背景模糊效果 (可选) */
+        }
+
+        /* 模态内容卡片 */
+        .modal-content {
+            background-color: white;
+            margin: 15% auto; /* 从顶部15%开始居中 */
+            padding: 2rem;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px; /* 最大宽度 */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out; /* 弹出动画 */
+        }
+
+        /* 关闭按钮 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+
+        /* 微信号图片样式 */
+        .wechat-qrcode {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 微信号文字 */
+        .wechat-id {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 1rem;
+        }
+
+        /* 模态对话框淡入动画 */
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PC端顶部导航栏 -->
+    <nav class="desktop-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Logo" class="logo-image" style="border-radius: 50%;">大湾软件工作室
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="index.html#about">关于</a></li>
+                <li><a href="index.html#cases">案例</a></li>
+                <li><a href="#contact-link" id="contact-link">联系</a></li> <!-- 修改：改为#contact-link并添加ID -->
+                <li><a href="usage.html">使用说明</a></li>
+                <li><a href="news.html">新闻资讯</a></li> <!-- 新增导航链接 -->
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 手机端底部导航栏 -->
+    <nav class="mobile-nav">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="usage.html">说明</a></li>
+                <li><a href="news.html">新闻</a></li>
+                <li><a href="#contact" id="mobile-contact-link">联系</a></li> <!-- 手机端也添加ID -->
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主要内容区 -->
+    <main class="main-content">
+        <h1>新闻资讯</h1>
+        <div class="news-list">
+            <div class="news-item">
+                <img src="./2026-03-27 105241.png" alt="新闻配图" class="news-image">
+                <div class="news-content">
+                    <h2 class="news-title">黄金价格预测（1）</h2>
+                    <div class="news-meta">
+                        <span>大湾软件工作室</span>
+                        <span>2026-03-27</span>
+                    </div>
+                    <p class="news-excerpt">
+                     川普关于中东停战问题的反复无常，金价今日延续偏空震荡下行，周四的当日最低价4352美金/盎司在半夜触及，周五的最低价大概在4200美元附近位置，日内可以延续连续冲高进场做空单，单边下跌50--80美金参与多单反弹的思路。
+
+                    早盘4430进空单，带个10美金止损，看4380短空，长看4350离场。
+
+                    下来4370、4340进多单，带个10美金止损，看4390短多离场，长看4420离场。
+                    </p>
+                </div>
+            </div>
+          
+            <div class="news-item">
+                <img src="./LIFENGYELEI206963620260214140018.png" alt="新闻配图" class="news-image">
+                <div class="news-content">
+                    <h2 class="news-title">公司发布全新一代价差套利引擎</h2>
+                    <div class="news-meta">
+                        <span>大湾软件工作室</span>
+                        <span>2026-1-15</span>
+                    </div>
+                    <p class="news-excerpt">
+                        我们很高兴地宣布，经过数月的研发，全新的价差套利引擎正式上线。 利用券商间微弱的价格差，精准捕捉交易机会，显著提升交易胜率和资金利用率。
+                    </p>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <img src="./3a796ad62a65d72a8a73e8b9676efc073493262939654283.jpg" alt="新闻配图" class="news-image">
+                <div class="news-content">
+                    <h2 class="news-title">成功为某大型机构客户提供定制化解决方案</h2>
+                    <div class="news-meta">
+                        <span>大湾软件工作室</span>
+                        <span>2023-03-15</span>
+                    </div>
+                    <p class="news-excerpt">
+                        我们的团队近期成功为一家知名投资机构交付了一套高度定制化的多账户管理系统。该系统满足了其复杂的风控和报表需求，获得了客户的高度评价。
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- --- 手机端联系信息块 --- -->
+    <div class="mobile-contact-info">
+        <p><span class="highlight">地址:</span> 浙江省宁波市象山县</p>
+        <p><span class="highlight">微信:</span> jackGold168</p>
+    </div>
+
+    <!-- PC端页脚 -->
+    <footer class="pc-footer">
+        <p>&copy; 2026 大湾软件工作室. 保留所有权利.</p>
+        <p>地址: 浙江省宁波市象山县 | 微信: jackGold168</p>
+    </footer>
+
+    <!-- --- 新增：模态对话框 HTML 结构 --- -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>联系我们</h2>
+            <p>请扫描下方二维码添加微信</p>
+            <img src="./88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode"> <!-- 请替换为您实际的二维码图片路径 -->
+            <p class="wechat-id">微信号: jackGold168</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 为新闻条目添加点击事件（可选，例如跳转到详情页）
+            const newsItems = document.querySelectorAll('.news-item');
+            newsItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 这里可以添加点击后的逻辑，例如：
+                    // window.location.href = 'news-detail.html?id=' + this.dataset.id;
+                    alert('已点击新闻: ' + this.querySelector('.news-title').textContent);
+                });
+            });
+
+            // 为导航栏添加平滑滚动功能
+            const allNavLinks = document.querySelectorAll('nav a[href^="#"]:not(#contact-link):not(#mobile-contact-link)'); // 排除联系按钮
+            allNavLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if(targetId.startsWith('#')) {
+                        const targetSection = document.querySelector(targetId);
+                        if (targetSection) {
+                            const isMobile = window.innerWidth <= 768;
+                            const navBarHeight = isMobile ? 60 : 70;
+                            window.scrollTo({
+                                top: targetSection.offsetTop - navBarHeight,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // --- 新增：模态对话框功能 ---
+            const contactModal = document.getElementById("contactModal");
+            const contactLink = document.getElementById("contact-link");
+            const mobileContactLink = document.getElementById("mobile-contact-link");
+            const span = document.getElementsByClassName("close")[0];
+
+            // 当点击“联系”链接时，打开模态框
+            contactLink.onclick = function(event) {
+                event.preventDefault(); // 阻止默认行为
+                contactModal.style.display = "block";
+            }
+            mobileContactLink.onclick = function(event) {
+                event.preventDefault(); // 阻止默认行为
+                contactModal.style.display = "block";
+            }
+
+            // 当点击关闭按钮 (x) 时，关闭模态框
+            span.onclick = function() {
+                contactModal.style.display = "none";
+            }
+
+            // 当点击模态框外部区域时，关闭模态框
+            window.onclick = function(event) {
+                if (event.target == contactModal) {
+                    contactModal.style.display = "none";
+                }
+            }
+            // --- 模态框功能结束 ---
+
+        });
+    </script>
+
+</body>
+</html>
