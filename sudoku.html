@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>游戏 - 数独大师 - 大湾软件工作室</title>
+    <style>
+        /* --- 重用主站的全局样式 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px; /* 为固定导航栏预留空间 */
+            background-color: #ecf0f1; /* 游戏页面浅色背景 */
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* --- 导航栏样式 (与原主页一致) --- */
+        nav.desktop-nav {
+            background-color: #2c3e50;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s;
+        }
+        .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 手机端底部导航栏 --- */
+        nav.mobile-nav {
+            display: none;
+            background-color: #2c3e50;
+            padding: 0.75rem 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        .mobile-nav .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 0;
+        }
+        .mobile-nav .nav-menu {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+        .mobile-nav .nav-menu li {
+            flex: 1;
+            text-align: center;
+        }
+        .mobile-nav .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 0.5rem;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .mobile-nav .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 主要内容区样式 --- */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1rem; /* 减少标题下边距 */
+            font-size: 2.5rem;
+            color: #2c3e50;
+        }
+        .game-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+
+        /* --- 游戏容器样式 --- */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+
+        .game-board {
+            border: 2px solid #2c3e50;
+            background-color: #fff; /* 白色背景 */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .score-panel {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .controls {
+            margin-top: 1.5rem;
+            text-align: center;
+            width: 100%;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 0 0.25rem;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn.start { background-color: #27ae60; }
+        .btn.start:hover { background-color: #2ecc71; }
+        .btn.pause { background-color: #f39c12; }
+        .btn.pause:hover { background-color: #e67e22; }
+        .btn.reset { background-color: #e74c3c; }
+        .btn.reset:hover { background-color: #c0392b; }
+
+        .instructions {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 0 5px 5px 0;
+            color: #555;
+            font-size: 0.95rem;
+            max-width: 100%;
+        }
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .instructions ul {
+            padding-left: 1.2rem;
+        }
+        .instructions li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* --- 页脚样式 (与原主页一致) --- */
+        footer.pc-footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        /* --- 手机端联系信息块 --- */
+        .mobile-contact-info {
+            display: none;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            margin-top: 3rem;
+        }
+        .mobile-contact-info p {
+            margin: 0.25rem 0;
+        }
+        .mobile-contact-info .highlight {
+            font-weight: bold;
+            color: #1abc9c;
+        }
+
+        /* --- 响应式设计 --- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding-top: 0;
+                padding-bottom: 60px; /* 为底部导航栏预留空间 */
+            }
+            nav.desktop-nav {
+                display: none;
+            }
+            nav.mobile-nav {
+                display: block;
+            }
+            .main-content {
+                padding: 0 1rem;
+                margin-top: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .game-container {
+                padding: 1.5rem;
+            }
+            .pc-footer {
+                display: none;
+            }
+            .mobile-contact-info {
+                display: block;
+            }
+        }
+
+        /* --- 新增：模态对话框样式 --- */
+        /* 模态背景遮罩 */
+        .modal {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            z-index: 2000; /* 确保在所有元素之上 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+            backdrop-filter: blur(5px); /* 背景模糊效果 (可选) */
+        }
+
+        /* 模态内容卡片 */
+        .modal-content {
+            background-color: white;
+            margin: 15% auto; /* 从顶部15%开始居中 */
+            padding: 2rem;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px; /* 最大宽度 */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out; /* 弹出动画 */
+        }
+
+        /* 关闭按钮 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+
+        /* 微信号图片样式 */
+        .wechat-qrcode {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 微信号文字 */
+        .wechat-id {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 1rem;
+        }
+
+        /* 模态对话框淡入动画 */
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        /* --- 数独游戏特有样式 --- */
+        .sudoku-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(9, 1fr); /* 明确设置9行 */
+            gap: 0;
+            width: 360px; /* 9 * 40px */
+            height: 360px; /* 9 * 40px */
+            border: 3px solid #2c3e50; /* 粗外边框 */
+            overflow: hidden; /* 确保内部边框不会溢出 */
+        }
+
+        .cell {
+            width: 40px;
+            height: 40px;
+            border-right: 1px solid #bdc3c7; /* 统一的细右边框 */
+            border-bottom: 1px solid #bdc3c7; /* 统一的细下边框 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none; /* 禁止选中文本 */
+            transition: background-color 0.2s;
+        }
+
+        /* 移除最右边列的右边框 */
+        .cell:nth-child(9n) {
+            border-right: none;
+        }
+
+        /* 移除最下面行的下边框 */
+        .cell:nth-child(n+73) {
+            border-bottom: none;
+        }
+
+        /* 添加3x3区域的粗边框 */
+        .cell:nth-child(3n):not(:nth-child(9n)) {
+            border-right: 2px solid #2c3e50; /* 每三个格子加粗右边框，但不包括行末 */
+        }
+        .cell:nth-child(n+19):nth-child(-n+27),
+        .cell:nth-child(n+46):nth-child(-n+54) {
+            border-bottom: 2px solid #2c3e50; /* 第3行和第6行之后加粗下边框 */
+        }
+
+        .cell.given {
+            background-color: #ecf0f1; /* 预设数字的背景色 */
+            color: #2c3e50;
+        }
+
+        .cell.user-input {
+            color: #3498db; /* 用户输入数字的颜色 */
+        }
+
+        .cell.selected {
+            background-color: #aed6f1; /* 选中格子的高亮色 */
+        }
+
+        .number-pad {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .num-btn {
+            padding: 0.75rem 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .clear-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .clear-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PC端顶部导航栏 -->
+    <nav class="desktop-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Logo" class="logo-image" style="border-radius: 50%;">大湾软件工作室
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="index.html#about">关于</a></li>
+                <li><a href="index.html#cases">案例</a></li>
+                <li><a href="usage.html">使用说明</a></li> 
+                <li><a href="news.html">新闻资讯</a></li>
+                <li><a href="games.html">游戏中心</a></li> <!-- 更新导航链接 -->
+                <li><a href="#" id="contact-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 手机端底部导航栏 -->
+    <nav class="mobile-nav">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="usage.html">说明</a></li>
+                <li><a href="news.html">新闻</a></li>
+               
+                <li><a href="#contact" id="mobile-contact-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主要内容区 -->
+    <main class="main-content">
+        <h1>数独大师</h1>
+        <h2 class="game-subtitle">Sudoku Master / 逻辑填数</h2>
+        
+        <div class="game-container">
+            <div class="score-panel">
+                <div>状态: <span id="status">就绪</span></div>
+                <div>难度: <span id="difficulty">中等</span></div>
+            </div>
+            
+            <div id="sudoku-grid" class="sudoku-grid"></div>
+            
+            <div class="number-pad">
+                <button class="btn num-btn" data-num="1">1</button>
+                <button class="btn num-btn" data-num="2">2</button>
+                <button class="btn num-btn" data-num="3">3</button>
+                <button class="btn num-btn" data-num="4">4</button>
+                <button class="btn num-btn" data-num="5">5</button>
+                <button class="btn num-btn" data-num="6">6</button>
+                <button class="btn num-btn" data-num="7">7</button>
+                <button class="btn num-btn" data-num="8">8</button>
+                <button class="btn num-btn" data-num="9">9</button>
+                <button class="btn clear-btn" id="clear-btn">清空</button>
+            </div>
+            
+            <div class="controls">
+                <button class="btn start" id="new-game-btn">新游戏</button>
+                <button class="btn pause" id="hint-btn">提示</button>
+                <button class="btn reset" id="check-btn">检查</button>
+            </div>
+
+            <div class="instructions">
+                <h3>游戏规则:</h3>
+                <ul>
+                    <li>在9x9的格子中填入数字1-9，使每行、每列和每个3x3的小九宫格内数字都不重复。</li>
+                    <li>点击格子进行选中，再点击数字键盘输入数字。</li>
+                    <li>使用“提示”按钮获取帮助，“检查”按钮验证答案正确性。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- --- 手机端联系信息块 --- -->
+    <div class="mobile-contact-info">
+        <p><span class="highlight">地址:</span> 浙江省宁波市象山县</p>
+        <p><span class="highlight">微信:</span> jackGold168</p>
+    </div>
+
+    <!-- PC端页脚 -->
+    <footer class="pc-footer">
+        <p>&copy; 2026 大湾软件工作室. 保留所有权利.</p>
+        <p>地址: 浙江省宁波市象山县 | 微信: jackGold168</p>
+    </footer>
+
+    <!-- --- 新增：模态对话框 HTML 结构 --- -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>联系我们</h2>
+            <p>请扫描下方二维码添加微信</p>
+            <img src="88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode">
+            <p class="wechat-id">微信号: jackGold168</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // DOM 元素
+            const gridContainer = document.getElementById('sudoku-grid');
+            const statusElement = document.getElementById('status');
+            const difficultyElement = document.getElementById('difficulty');
+            const newGameBtn = document.getElementById('new-game-btn');
+            const hintBtn = document.getElementById('hint-btn');
+            const checkBtn = document.getElementById('check-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const numberButtons = document.querySelectorAll('.num-btn');
+
+            // 游戏变量
+            let board = Array(9).fill().map(() => Array(9).fill(0));
+            let solution = Array(9).fill().map(() => Array(9).fill(0));
+            let initialBoard = Array(9).fill().map(() => Array(9).fill(0)); // 保存初始状态
+            let selectedCell = null;
+
+            // 创建数独网格
+            function createGrid() {
+                gridContainer.innerHTML = ''; // 清空现有网格
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        const cell = document.createElement('div');
+                        cell.classList.add('cell');
+                        cell.dataset.row = row;
+                        cell.dataset.col = col;
+                        
+                        cell.addEventListener('click', () => selectCell(row, col));
+                        gridContainer.appendChild(cell);
+                    }
+                }
+            }
+
+            // 选择单元格
+            function selectCell(row, col) {
+                // 取消之前选中的格子
+                if (selectedCell) {
+                    selectedCell.classList.remove('selected');
+                }
+                
+                const cellElement = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                
+                // 只能选择初始非数字的格子
+                if (initialBoard[row][col] === 0) {
+                    selectedCell = cellElement;
+                    cellElement.classList.add('selected');
+                }
+            }
+
+            // 显示当前棋盘状态
+            function renderBoard() {
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        const cellElement = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                        cellElement.textContent = board[row][col] !== 0 ? board[row][col] : '';
+                        
+                        // 设置初始数字和用户输入的样式
+                        if (initialBoard[row][col] !== 0) {
+                            cellElement.classList.add('given');
+                            cellElement.classList.remove('user-input');
+                        } else {
+                            cellElement.classList.remove('given');
+                            if (board[row][col] !== 0) {
+                                cellElement.classList.add('user-input');
+                            } else {
+                                cellElement.classList.remove('user-input');
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 检查数独规则 (行、列、3x3格)
+            function isValidPlacement(board, row, col, num) {
+                // 检查行
+                for (let c = 0; c < 9; c++) {
+                    if (c !== col && board[row][c] === num) return false;
+                }
+                // 检查列
+                for (let r = 0; r < 9; r++) {
+                    if (r !== row && board[r][col] === num) return false;
+                }
+                // 检查3x3格
+                const boxRowStart = Math.floor(row / 3) * 3;
+                const boxColStart = Math.floor(col / 3) * 3;
+                for (let r = boxRowStart; r < boxRowStart + 3; r++) {
+                    for (let c = boxColStart; c < boxColStart + 3; c++) {
+                        if ((r !== row || c !== col) && board[r][c] === num) return false;
+                    }
+                }
+                return true;
+            }
+
+            // 解决数独的回溯算法
+            function solveSudoku(grid) {
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        if (grid[row][col] === 0) {
+                            for (let num = 1; num <= 9; num++) {
+                                if (isValidPlacement(grid, row, col, num)) {
+                                    grid[row][col] = num;
+                                    if (solveSudoku(grid)) {
+                                        return true;
+                                    }
+                                    grid[row][col] = 0; // 回溯
+                                }
+                            }
+                            return false; // 无法放置任何数字
+                        }
+                    }
+                }
+                return true; // 求解完成
+            }
+
+            // 生成数独谜题
+            function generatePuzzle(difficulty) {
+                // 1. 创建一个完整的解
+                let fullBoard = Array(9).fill().map(() => Array(9).fill(0));
+                solveSudoku(fullBoard);
+                
+                // 2. 拷贝一份作为最终解
+                solution = fullBoard.map(arr => [...arr]);
+                
+                // 3. 移除数字制造谜题
+                board = fullBoard.map(arr => [...arr]);
+                let cellsToRemove;
+                switch(difficulty) {
+                    case '简单': cellsToRemove = 35; break;
+                    case '困难': cellsToRemove = 50; break;
+                    case '中等':
+                    default: cellsToRemove = 45; break;
+                }
+
+                while (cellsToRemove > 0) {
+                    const row = Math.floor(Math.random() * 9);
+                    const col = Math.floor(Math.random() * 9);
+                    if (board[row][col] !== 0) {
+                        board[row][col] = 0;
+                        cellsToRemove--;
+                    }
+                }
+
+                initialBoard = board.map(arr => [...arr]); // 保存初始状态
+            }
+
+            // 处理数字按钮点击
+            numberButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (!selectedCell) return;
+                    
+                    const row = parseInt(selectedCell.dataset.row);
+                    const col = parseInt(selectedCell.dataset.col);
+                    
+                    // 只能在初始非数字的格子输入
+                    if (initialBoard[row][col] === 0) {
+                        const num = parseInt(button.dataset.num);
+                        if (isValidPlacement(board, row, col, num)) {
+                            board[row][col] = num;
+                            renderBoard();
+                        } else {
+                            statusElement.textContent = '错误! 数字冲突';
+                            setTimeout(() => { statusElement.textContent = '就绪'; }, 2000);
+                        }
+                    }
+                });
+            });
+
+            // 清空用户输入
+            clearBtn.addEventListener('click', () => {
+                if (!selectedCell) return;
+                
+                const row = parseInt(selectedCell.dataset.row);
+                const col = parseInt(selectedCell.dataset.col);
+                
+                if (initialBoard[row][col] === 0) {
+                    board[row][col] = 0;
+                    renderBoard();
+                }
+            });
+
+            // 新游戏
+            newGameBtn.addEventListener('click', () => {
+                const difficulties = ['简单', '中等', '困难'];
+                const randomDifficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
+                difficultyElement.textContent = randomDifficulty;
+                generatePuzzle(randomDifficulty);
+                renderBoard();
+                statusElement.textContent = '就绪';
+                if (selectedCell) selectedCell.classList.remove('selected');
+                selectedCell = null;
+            });
+
+            // 提示
+            hintBtn.addEventListener('click', () => {
+                if (!selectedCell) {
+                    statusElement.textContent = '请先选择一个格子';
+                    return;
+                }
+                const row = parseInt(selectedCell.dataset.row);
+                const col = parseInt(selectedCell.dataset.col);
+                
+                if (initialBoard[row][col] === 0) { // 是空格
+                    board[row][col] = solution[row][col];
+                    renderBoard();
+                    statusElement.textContent = '已提示';
+                    setTimeout(() => { statusElement.textContent = '就绪'; }, 2000);
+                }
+            });
+
+            // 检查答案
+            checkBtn.addEventListener('click', () => {
+                let isComplete = true;
+                let isCorrect = true;
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        if (board[row][col] === 0) {
+                            isComplete = false;
+                        }
+                        if (board[row][col] !== solution[row][col]) {
+                            isCorrect = false;
+                        }
+                    }
+                }
+
+                if (isComplete && isCorrect) {
+                    statusElement.textContent = '恭喜！答案正确！';
+                    alert('恭喜您完成了数独！');
+                } else if (!isComplete) {
+                    statusElement.textContent = '还有空格未填写';
+                } else {
+                    statusElement.textContent = '答案有误，请检查';
+                }
+            });
+
+            // 初始化游戏
+            createGrid();
+            newGameBtn.click(); // 自动开始一个新游戏
+
+            // --- 以下为原HTML中的其他脚本逻辑 ---
+            const contactModal = document.getElementById("contactModal");
+            const contactLink = document.getElementById("contact-link");
+            const mobileContactLink = document.getElementById("mobile-contact-link");
+            const span = document.getElementsByClassName("close")[0];
+
+            contactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+            mobileContactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+
+            span.onclick = function() {
+                contactModal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == contactModal) {
+                    contactModal.style.display = "none";
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
