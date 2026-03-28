@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>游戏 - 贪吃蛇 - 大湾软件工作室</title>
+    <style>
+        /* --- 重用主站的全局样式 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px; /* 为固定导航栏预留空间 */
+            background-color: #ecf0f1; /* 游戏页面浅色背景 */
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* --- 导航栏样式 (与原主页一致) --- */
+        nav.desktop-nav {
+            background-color: #2c3e50;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s;
+        }
+        .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 手机端底部导航栏 --- */
+        nav.mobile-nav {
+            display: none;
+            background-color: #2c3e50;
+            padding: 0.75rem 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        .mobile-nav .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 0;
+        }
+        .mobile-nav .nav-menu {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+        .mobile-nav .nav-menu li {
+            flex: 1;
+            text-align: center;
+        }
+        .mobile-nav .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 0.5rem;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .mobile-nav .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 主要内容区样式 --- */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1rem; /* 减少标题下边距 */
+            font-size: 2.5rem;
+            color: #2c3e50;
+        }
+        .game-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+
+        /* --- 游戏容器样式 --- */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(20, 20px); /* 20列，每格20px */
+            grid-template-rows: repeat(20, 20px); /* 20行，每格20px */
+            gap: 1px;
+            border: 2px solid #2c3e50;
+            background-color: #34495e;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .cell {
+            width: 20px;
+            height: 20px;
+            background-color: #ecf0f1;
+        }
+
+        .snake {
+            background-color: #27ae60;
+            border-radius: 2px;
+        }
+
+        .food {
+            background-color: #e74c3c;
+            border-radius: 50%;
+        }
+
+        .score-panel {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 420px; /* 与游戏板同宽 */
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .controls {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn.start { background-color: #27ae60; }
+        .btn.start:hover { background-color: #2ecc71; }
+        .btn.pause { background-color: #f39c12; }
+        .btn.pause:hover { background-color: #e67e22; }
+        .btn.reset { background-color: #e74c3c; }
+        .btn.reset:hover { background-color: #c0392b; }
+
+        .instructions {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 0 5px 5px 0;
+            color: #555;
+            font-size: 0.95rem;
+            max-width: 420px;
+        }
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .instructions ul {
+            padding-left: 1.2rem;
+        }
+        .instructions li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* --- 页脚样式 (与原主页一致) --- */
+        footer.pc-footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        /* --- 手机端联系信息块 --- */
+        .mobile-contact-info {
+            display: none;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            margin-top: 3rem;
+        }
+        .mobile-contact-info p {
+            margin: 0.25rem 0;
+        }
+        .mobile-contact-info .highlight {
+            font-weight: bold;
+            color: #1abc9c;
+        }
+
+        /* --- 响应式设计 --- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding-top: 0;
+                padding-bottom: 60px; /* 为底部导航栏预留空间 */
+            }
+            nav.desktop-nav {
+                display: none;
+            }
+            nav.mobile-nav {
+                display: block;
+            }
+            .main-content {
+                padding: 0 1rem;
+                margin-top: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .game-container {
+                padding: 1.5rem;
+            }
+            /* 为手机端缩小网格 */
+            .game-board {
+                grid-template-columns: repeat(20, 15px); /* 每格15px */
+                grid-template-rows: repeat(20, 15px); /* 每格15px */
+            }
+            .cell {
+                width: 15px;
+                height: 15px;
+            }
+            .pc-footer {
+                display: none;
+            }
+            .mobile-contact-info {
+                display: block;
+            }
+        }
+
+        /* --- 新增：模态对话框样式 --- */
+        /* 模态背景遮罩 */
+        .modal {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            z-index: 2000; /* 确保在所有元素之上 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+            backdrop-filter: blur(5px); /* 背景模糊效果 (可选) */
+        }
+
+        /* 模态内容卡片 */
+        .modal-content {
+            background-color: white;
+            margin: 15% auto; /* 从顶部15%开始居中 */
+            padding: 2rem;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px; /* 最大宽度 */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out; /* 弹出动画 */
+        }
+
+        /* 关闭按钮 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+
+        /* 微信号图片样式 */
+        .wechat-qrcode {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 微信号文字 */
+        .wechat-id {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 1rem;
+        }
+
+        /* 模态对话框淡入动画 */
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PC端顶部导航栏 -->
+    <nav class="desktop-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Logo" class="logo-image" style="border-radius: 50%;">大湾软件工作室
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="index.html#about">关于</a></li>
+                <li><a href="index.html#cases">案例</a></li>
+                <li><a href="usage.html">使用说明</a></li> 
+                <li><a href="news.html">新闻资讯</a></li>
+                <li><a href="games.html">游戏中心</a></li> <!-- 更新导航链接 -->
+                <li><a href="#" id="contact-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 手机端底部导航栏 -->
+    <nav class="mobile-nav">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="usage.html">说明</a></li>
+                <li><a href="news.html">新闻</a></li>
+              
+                <li><a href="#contact" id="mobile-contact-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主要内容区 -->
+    <main class="main-content">
+        <h1>经典游戏</h1>
+        <h2 class="game-subtitle">Snake / 贪吃蛇</h2>
+        
+        <div class="game-container">
+            <div class="score-panel">
+                <div>得分: <span id="score">0</span></div>
+                <div>最高分: <span id="high-score">0</span></div>
+            </div>
+            
+            <div class="game-board" id="board"></div>
+            
+            <div class="controls">
+                <button class="btn start" id="start-btn">开始</button>
+                <button class="btn pause" id="pause-btn" disabled>暂停</button>
+                <button class="btn reset" id="reset-btn">重置</button>
+            </div>
+
+            <div class="instructions">
+                <h3>游戏规则:</h3>
+                <ul>
+                    <li>使用键盘方向键 <strong>↑, ↓, ←, →</strong> 控制蛇的移动方向。</li>
+                    <li>让蛇头吃到红色的<strong>食物</strong>，每次吃到身体会增长一节，得分+1。</li>
+                    <li>游戏结束后，当前得分会与历史最高分比较并更新。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- --- 手机端联系信息块 --- -->
+    <div class="mobile-contact-info">
+        <p><span class="highlight">地址:</span> 浙江省宁波市象山县</p>
+        <p><span class="highlight">微信:</span> jackGold168</p>
+    </div>
+
+    <!-- PC端页脚 -->
+    <footer class="pc-footer">
+        <p>&copy; 2026 大湾软件工作室. 保留所有权利.</p>
+        <p>地址: 浙江省宁波市象山县 | 微信: jackGold168</p>
+    </footer>
+
+    <!-- --- 新增：模态对话框 HTML 结构 --- -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>联系我们</h2>
+            <p>请扫描下方二维码添加微信</p>
+            <img src="88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode">
+            <p class="wechat-id">微信号: jackGold168</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 游戏配置
+            const GRID_SIZE = 20;
+            const CELL_SIZE = 20; // PC端
+            const CELL_SIZE_MOBILE = 15; // 移动端
+            let CELL_SIZE_CURRENT = window.innerWidth <= 768 ? CELL_SIZE_MOBILE : CELL_SIZE;
+
+            // 游戏状态
+            let snake = [{x: 10, y: 10}];
+            let food = generateFood();
+            let direction = 'right';
+            let nextDirection = 'right';
+            let score = 0;
+            let highScore = localStorage.getItem('snakeHighScore') || 0;
+            let gameInterval;
+            let gameRunning = false;
+            let gamePaused = false;
+
+            // DOM 元素
+            const boardElement = document.getElementById('board');
+            const scoreElement = document.getElementById('score');
+            const highScoreElement = document.getElementById('high-score');
+            const startBtn = document.getElementById('start-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const resetBtn = document.getElementById('reset-btn');
+
+            highScoreElement.textContent = highScore;
+
+            // 初始化游戏板
+            function initializeBoard() {
+                boardElement.innerHTML = '';
+                boardElement.style.gridTemplateColumns = `repeat(${GRID_SIZE}, ${CELL_SIZE_CURRENT}px)`;
+                boardElement.style.gridTemplateRows = `repeat(${GRID_SIZE}, ${CELL_SIZE_CURRENT}px)`;
+
+                for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    boardElement.appendChild(cell);
+                }
+            }
+
+            // 生成食物
+            function generateFood() {
+                let newFood;
+                do {
+                    newFood = {
+                        x: Math.floor(Math.random() * GRID_SIZE),
+                        y: Math.floor(Math.random() * GRID_SIZE)
+                    };
+                    // 确保食物不在蛇身上
+                } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+                
+                return newFood;
+            }
+
+            // 绘制游戏
+            function draw() {
+                // 清除所有样式
+                document.querySelectorAll('.cell').forEach(cell => {
+                    cell.classList.remove('snake', 'food');
+                });
+
+                // 绘制蛇
+                snake.forEach(segment => {
+                    const index = segment.y * GRID_SIZE + segment.x;
+                    if (document.querySelectorAll('.cell')[index]) {
+                        document.querySelectorAll('.cell')[index].classList.add('snake');
+                    }
+                });
+
+                // 绘制食物
+                const foodIndex = food.y * GRID_SIZE + food.x;
+                if (document.querySelectorAll('.cell')[foodIndex]) {
+                    document.querySelectorAll('.cell')[foodIndex].classList.add('food');
+                }
+            }
+
+            // 移动蛇
+            function moveSnake() {
+                if (gamePaused) return;
+
+                direction = nextDirection;
+                const head = {...snake[0]};
+
+                switch (direction) {
+                    case 'up': head.y--; break;
+                    case 'down': head.y++; break;
+                    case 'left': head.x--; break;
+                    case 'right': head.x++; break;
+                }
+
+                // 检查碰撞边界
+                if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+                    gameOver();
+                    return;
+                }
+
+                // 检查撞到自己
+                if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                    gameOver();
+                    return;
+                }
+
+                snake.unshift(head);
+
+                // 检查是否吃到食物
+                if (head.x === food.x && head.y === food.y) {
+                    score++;
+                    scoreElement.textContent = score;
+                    food = generateFood(); // 生成新食物
+                } else {
+                    snake.pop(); // 没吃到则尾部消失
+                }
+
+                draw();
+            }
+
+            // 游戏结束
+            function gameOver() {
+                clearInterval(gameInterval);
+                gameRunning = false;
+                updateHighScore();
+                alert(`游戏结束！你的得分是: ${score}`);
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                pauseBtn.textContent = '暂停';
+            }
+
+            // 更新最高分
+            function updateHighScore() {
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('snakeHighScore', highScore);
+                    highScoreElement.textContent = highScore;
+                }
+            }
+
+            // 开始游戏
+            function startGame() {
+                if (gameRunning) return;
+                
+                resetGame();
+                gameRunning = true;
+                gamePaused = false;
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                pauseBtn.textContent = '暂停';
+                gameInterval = setInterval(moveSnake, 150);
+            }
+
+            // 暂停/继续游戏
+            function togglePause() {
+                if (!gameRunning) return;
+                
+                gamePaused = !gamePaused;
+                pauseBtn.textContent = gamePaused ? '继续' : '暂停';
+            }
+
+            // 重置游戏
+            function resetGame() {
+                clearInterval(gameInterval);
+                snake = [{x: 10, y: 10}];
+                direction = 'right';
+                nextDirection = 'right';
+                score = 0;
+                scoreElement.textContent = score;
+                food = generateFood();
+                draw();
+                gameRunning = false;
+                gamePaused = false;
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                pauseBtn.textContent = '暂停';
+            }
+
+            // 键盘控制
+            function handleKeyPress(e) {
+                switch(e.key) {
+                    case 'ArrowUp':
+                        if (direction !== 'down') nextDirection = 'up';
+                        break;
+                    case 'ArrowDown':
+                        if (direction !== 'up') nextDirection = 'down';
+                        break;
+                    case 'ArrowLeft':
+                        if (direction !== 'right') nextDirection = 'left';
+                        break;
+                    case 'ArrowRight':
+                        if (direction !== 'left') nextDirection = 'right';
+                        break;
+                }
+            }
+
+            // 事件监听器
+            startBtn.addEventListener('click', startGame);
+            pauseBtn.addEventListener('click', togglePause);
+            resetBtn.addEventListener('click', resetGame);
+            document.addEventListener('keydown', handleKeyPress);
+
+            // 响应式处理
+            window.addEventListener('resize', function() {
+                const newSize = window.innerWidth <= 768 ? CELL_SIZE_MOBILE : CELL_SIZE;
+                if (newSize !== CELL_SIZE_CURRENT) {
+                    CELL_SIZE_CURRENT = newSize;
+                    initializeBoard();
+                    draw(); // 重新绘制以适应新尺寸
+                }
+            });
+
+            // 初始化
+            initializeBoard();
+            draw();
+
+            // --- 以下为原HTML中的其他脚本逻辑 ---
+            // ... (联系模态框等逻辑保持不变) ...
+            const contactModal = document.getElementById("contactModal");
+            const contactLink = document.getElementById("contact-link");
+            const mobileContactLink = document.getElementById("mobile-contact-link");
+            const span = document.getElementsByClassName("close")[0];
+
+            contactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+            mobileContactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+
+            span.onclick = function() {
+                contactModal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == contactModal) {
+                    contactModal.style.display = "none";
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

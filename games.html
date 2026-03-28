@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="logo.png" type="image/png">
-    <title>新闻资讯 - 大湾软件工作室</title>
+    <title>游戏中心 - 大湾软件工作室</title>
     <style>
         /* --- 重用主站的全局样式 --- */
         * {
@@ -17,6 +17,7 @@
             line-height: 1.6;
             color: #333;
             padding-top: 60px; /* 为固定导航栏预留空间 */
+            background-color: #ecf0f1; /* 游戏页面浅色背景 */
         }
         .logo {
             display: flex;
@@ -110,52 +111,89 @@
         }
         h1 {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 0.5rem;
             font-size: 2.5rem;
             color: #2c3e50;
         }
+        .page-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
 
-        /* --- 新闻列表样式 - 修改为两栏 --- */
-        .news-list {
-            display: grid; /* 使用 Grid 布局 */
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); /* 自动适应，每列最小450px */
-            gap: 1.5rem; /* 项目之间的间距 */
+        /* --- 游戏列表网格布局 --- */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 响应式三列 */
+            gap: 2rem;
+            margin-top: 1rem;
         }
-        .news-item {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            overflow: hidden; /* 防止图片溢出 */
+
+        /* --- 游戏项目卡片样式 --- */
+        .game-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* 确保卡片高度一致 */
         }
-        .news-item:hover {
+        .game-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
-        .news-image {
+
+        .game-image {
             width: 100%;
-            height: 200px;
-            object-fit: cover; /* 保持比例填充，避免变形 */
+            height: 180px;
+            object-fit: cover; /* 保持图片比例并填满容器 */
+            background-color: #bdc3c7; /* 如果没有图片，显示灰色占位符 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
         }
-        .news-content {
+        /* 为图片添加样式 */
+        .game-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-content {
             padding: 1.5rem;
+            flex-grow: 1; /* 让内容区域填充剩余空间 */
         }
-        .news-title {
-            font-size: 1.5rem;
+
+        .game-title {
+            font-size: 1.4rem;
             color: #2c3e50;
             margin-bottom: 0.5rem;
         }
-        .news-meta {
-            display: flex;
-            justify-content: space-between;
+
+        .game-description {
             color: #7f8c8d;
-            font-size: 0.9rem;
             margin-bottom: 1rem;
+            line-height: 1.5;
         }
-        .news-excerpt {
-            color: #555;
-            line-height: 1.6;
+
+        .game-link {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            text-align: center;
+            width: 100%;
+        }
+        .game-link:hover {
+            background-color: #2980b9;
         }
 
         /* --- 页脚样式 (与原主页一致) --- */
@@ -203,15 +241,9 @@
             h1 {
                 font-size: 2rem;
             }
-            /* 在手机端，Grid 回退为单列 */
-            .news-list {
-                grid-template-columns: 1fr; /* 只显示一列 */
-            }
-            .news-item {
-                margin-bottom: 1rem;
-            }
-            .news-image {
-                height: 150px;
+            .games-grid {
+                grid-template-columns: 1fr; /* 手机端单列布局 */
+                gap: 1.5rem;
             }
             .pc-footer {
                 display: none;
@@ -222,34 +254,29 @@
         }
 
         /* --- 新增：模态对话框样式 --- */
-        /* 模态背景遮罩 */
         .modal {
-            display: none; /* 默认隐藏 */
+            display: none;
             position: fixed;
-            z-index: 2000; /* 确保在所有元素之上 */
+            z-index: 2000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
-            backdrop-filter: blur(5px); /* 背景模糊效果 (可选) */
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
         }
-
-        /* 模态内容卡片 */
         .modal-content {
             background-color: white;
-            margin: 15% auto; /* 从顶部15%开始居中 */
+            margin: 15% auto;
             padding: 2rem;
             border-radius: 10px;
             width: 80%;
-            max-width: 400px; /* 最大宽度 */
+            max-width: 400px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             text-align: center;
             position: relative;
-            animation: modalFadeIn 0.3s ease-out; /* 弹出动画 */
+            animation: modalFadeIn 0.3s ease-out;
         }
-
-        /* 关闭按钮 */
         .close {
             color: #aaa;
             float: right;
@@ -261,13 +288,10 @@
             top: 10px;
             right: 15px;
         }
-
         .close:hover,
         .close:focus {
             color: black;
         }
-
-        /* 微信号图片样式 */
         .wechat-qrcode {
             max-width: 100%;
             height: auto;
@@ -275,15 +299,11 @@
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
-        /* 微信号文字 */
         .wechat-id {
             font-weight: bold;
             color: #2c3e50;
             margin-top: 1rem;
         }
-
-        /* 模态对话框淡入动画 */
         @keyframes modalFadeIn {
             from {opacity: 0; transform: translateY(-50px);}
             to {opacity: 1; transform: translateY(0);}
@@ -303,10 +323,10 @@
                 <li><a href="index.html#services">服务</a></li>
                 <li><a href="index.html#about">关于</a></li>
                 <li><a href="index.html#cases">案例</a></li>
-				<li><a href="usage.html">使用说明</a></li> 
-				<li><a href="news.html">新闻资讯</a></li> <!-- 新增导航链接 -->
+                <li><a href="usage.html">使用说明</a></li> 
+                <li><a href="news.html">新闻资讯</a></li>
                 <li><a href="games.html">游戏中心</a></li> <!-- 更新导航链接 -->
-			 <li><a href="#" id="contact-link">联系</a></li> <!-- 修改：改为#并添加ID -->
+                <li><a href="#" id="contact-link">联系</a></li>
             </ul>
         </div>
     </nav>
@@ -319,86 +339,128 @@
                 <li><a href="index.html#services">服务</a></li>
                 <li><a href="usage.html">说明</a></li>
                 <li><a href="news.html">新闻</a></li>
-                <li><a href="#contact" id="mobile-contact-link">联系</a></li> <!-- 手机端也添加ID -->
+              
+                <li><a href="#contact" id="mobile-contact-link">联系</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- 主要内容区 -->
     <main class="main-content">
-        <h1>新闻资讯</h1>
-        <div class="news-list">
-            <div class="news-item">
-                <img src="./2026-03-27 105241.png" alt="新闻配图" class="news-image">
-                <div class="news-content">
-                    <h2 class="news-title">黄金价格预测（1）</h2>
-                    <div class="news-meta">
-                        <span>大湾软件工作室</span>
-                        <span>2026-03-27</span>
-                    </div>
-                    <p class="news-excerpt">
-                     川普关于中东停战问题的反复无常，金价今日延续偏空震荡下行，周四的当日最低价4352美金/盎司在半夜触及，周五的最低价大概在4200美元附近位置，日内可以延续连续冲高进场做空单，单边下跌50--80美金参与多单反弹的思路。
-
-                    早盘4430进空单，带个10美金止损，看4380短空，长看4350离场。
-
-                    下来4370、4340进多单，带个10美金止损，看4390短多离场，长看4420离场。
-                    </p>
+        <h1>游戏中心</h1>
+        <h2 class="page-subtitle">Enjoy Classic Fun</h2>
+        
+        <div class="games-grid">
+            <!-- 游戏 1: 贪吃蛇 -->
+            <div class="game-card">
+                <div class="game-image">
+                    
+                    <img src="./game/tanchihe.png" alt="贪吃蛇游戏图标">
                 </div>
-            </div>
-          
-            <div class="news-item">
-                <img src="./LIFENGYELEI206963620260214140018.png" alt="公司发布全新一代价差套利引擎" class="news-image">
-                <div class="news-content">
-                    <h2 class="news-title">公司发布全新一代价差套利引擎</h2>
-                    <div class="news-meta">
-                        <span>大湾软件工作室</span>
-                        <span>2026-1-15</span>
-                    </div>
-                    <p class="news-excerpt">
-                        我们很高兴地宣布，经过数月的研发，全新的价差套利引擎正式上线。 利用券商间微弱的价格差，精准捕捉交易机会，显著提升交易胜率和资金利用率。
-                    </p>
+                <div class="game-content">
+                    <h3 class="game-title">经典贪吃蛇</h3>
+                    <p class="game-description">重温童年经典，控制小蛇不断变长，挑战你的反应力和策略，看看能拿到多少分！</p>
+                    <a href="./game/snake.html" class="game-link">开始游戏</a>
                 </div>
             </div>
 
-            <div class="news-item">
-                <img src="./3a796ad62a65d72a8a73e8b9676efc073493262939654283.jpg" alt="成功为某大型机构客户提供定制化解决方案" class="news-image">
-                <div class="news-content">
-                    <h2 class="news-title">成功为某大型机构客户提供定制化解决方案</h2>
-                    <div class="news-meta">
-                        <span>大湾软件工作室</span>
-                        <span>2023-03-15</span>
-                    </div>
-                    <p class="news-excerpt">
-                        我们的团队近期成功为一家知名投资机构交付了一套高度定制化的多账户管理系统。该系统满足了其复杂的风控和报表需求，获得了客户的高度评价。
-                    </p>
+            <!-- 游戏 2: 示例 -->
+            <div class="game-card">
+                <div class="game-image">
+                  <img src="./game/eluosifangk.png" alt="俄罗斯方块游戏图标">
+                </div>
+                <div class="game-content">
+                    <h3 class="game-title">俄罗斯方块</h3>
+                    <p class="game-description">方寸之间，智慧翻转！排兵布阵，策略为王，体验风靡全球的不朽经典！</p>
+                    <a href="./game/tetris.html" class="game-link">开始游戏</a>
                 </div>
             </div>
 
-            <div class="news-item">
-                <img src="./20260224192037_367_37.png" alt="机缘来了，开发早盘系统" class="news-image">
-                <div class="news-content">
-                    <h2 class="news-title">机缘来了，开发早盘系统</h2>
-                    <div class="news-meta">
-                        <span>大湾软件工作室</span>
-                        <span>2021-09-20</span>
-                    </div>
-                    <p class="news-excerpt">
-                        开发早盘系统，一边开发一边交易。通过系统开发和自主交易，工作室也因此赚取了丰厚利润。
-                    </p>
+            <!-- 游戏 3: 示例 -->
+            <div class="game-card">
+                <div class="game-image">
+                    <img src="./game/gudugonglu.png" alt="孤独的公路游戏图标">
+                </div>
+                <div class="game-content">
+                    <h3 class="game-title">孤独的公路</h3>
+                    <p class="game-description">有些旅程，注定是一个人的狂欢，在孤独的公路上，找到最纯粹的自己</p>
+                    <a href="./game/car.html" class="game-link">开始游戏</a>
                 </div>
             </div>
-			
-            <div class="news-item">
-                <img src="./3a796ad62a65d72a8a73e8b9676efc073493262939654283.jpg" alt="亦步亦趋，工作室正式开业，第一款跟单软件，大世界跟单上线" class="news-image">
-                <div class="news-content">
-                    <h2 class="news-title">亦步亦趋，工作室正式开业，第一款跟单软件，大世界跟单上线</h2>
-                    <div class="news-meta">
-                        <span>大湾软件工作室</span>
-                        <span>2020-02-15</span>
-                    </div>
-                    <p class="news-excerpt">
-                        开发大世界跟单，出来时界面和功能都比较挫，经过5版迭代，终换蓝色飞鹰logo，一直到2023年。期间还开发了Manager 跟单和改单等多款系统。
-                    </p>
+        </div>
+
+        <div class="games-grid">
+            <!-- 游戏 4: 示例 -->
+            <div class="game-card">
+                <div class="game-image">
+                     游戏占位符
+                </div>
+                <div class="game-content">
+                    <h3 class="game-title">敬请期待</h3>
+                    <p class="game-description">更多精彩游戏正在开发中，欢迎持续关注我们的游戏中心！</p>
+                    <a href="#" class="game-link" onclick="return false;" style="background-color: #95a5a6; cursor: not-allowed;">即将上线</a>
+                </div>
+            </div>
+
+            <!-- 游戏 5: 示例 -->
+            <div class="game-card">
+                <div class="game-image">
+                    游戏占位符
+                </div>
+                <div class="game-content">
+                    <h3 class="game-title">敬请期待</h3>
+                    <p class="game-description">更多精彩游戏正在开发中，欢迎持续关注我们的游戏中心！</p>
+                    <a href="#" class="game-link" onclick="return false;" style="background-color: #95a5a6; cursor: not-allowed;">即将上线</a>
+                </div>
+            </div>
+
+            <!-- 游戏 6: 示例 -->
+            <div class="game-card">
+                <div class="game-image">
+                    游戏占位符
+                </div>
+                <div class="game-content">
+                    <h3 class="game-title">敬请期待</h3>
+                    <p class="game-description">更多精彩游戏正在开发中，欢迎持续关注我们的游戏中心！</p>
+                    <a href="#" class="game-link" onclick="return false;" style="background-color: #95a5a6; cursor: not-allowed;">即将上线</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="games-grid">
+            <!-- 游戏 7: 示例 -->
+            <div class="game-card">
+                <div class="game-image">
+                    游戏占位符
+                </div>
+                <div class="game-content">
+                    <h3 class="game-title">敬请期待</h3>
+                    <p class="game-description">更多精彩游戏正在开发中，欢迎持续关注我们的游戏中心！</p>
+                    <a href="#" class="game-link" onclick="return false;" style="background-color: #95a5a6; cursor: not-allowed;">即将上线</a>
+                </div>
+            </div>
+
+            <!-- 游戏 8: 示例 -->
+            <div class="game-card">
+                <div class="game-image">
+                    游戏占位符
+                </div>
+                <div class="game-content">
+                    <h3 class="game-title">敬请期待</h3>
+                    <p class="game-description">更多精彩游戏正在开发中，欢迎持续关注我们的游戏中心！</p>
+                    <a href="#" class="game-link" onclick="return false;" style="background-color: #95a5a6; cursor: not-allowed;">即将上线</a>
+                </div>
+            </div>
+
+            <!-- 游戏 9: 示例 -->
+            <div class="game-card">
+                <div class="game-image">
+                  游戏占位符
+                </div>
+                <div class="game-content">
+                    <h3 class="game-title">敬请期待</h3>
+                    <p class="game-description">更多精彩游戏正在开发中，欢迎持续关注我们的游戏中心！</p>
+                    <a href="#" class="game-link" onclick="return false;" style="background-color: #95a5a6; cursor: not-allowed;">即将上线</a>
                 </div>
             </div>
         </div>
@@ -422,72 +484,38 @@
             <span class="close">&times;</span>
             <h2>联系我们</h2>
             <p>请扫描下方二维码添加微信</p>
-            <img src="./88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode"> <!-- 请替换为您实际的二维码图片路径 -->
+            <img src="./88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode">
             <p class="wechat-id">微信号: jackGold168</p>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // 为新闻条目添加点击事件（可选，例如跳转到详情页）
-            const newsItems = document.querySelectorAll('.news-item');
-            newsItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    // 这里可以添加点击后的逻辑，例如：
-                    // window.location.href = 'news-detail.html?id=' + this.dataset.id;
-                   // alert('已点击新闻: ' + this.querySelector('.news-title').textContent);
-                });
-            });
-
-            // 为导航栏添加平滑滚动功能
-            const allNavLinks = document.querySelectorAll('nav a[href^="#"]:not(#contact-link):not(#mobile-contact-link)'); // 排除联系按钮
-            allNavLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    if(targetId.startsWith('#')) {
-                        const targetSection = document.querySelector(targetId);
-                        if (targetSection) {
-                            const isMobile = window.innerWidth <= 768;
-                            const navBarHeight = isMobile ? 60 : 70;
-                            window.scrollTo({
-                                top: targetSection.offsetTop - navBarHeight,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }
-                });
-            });
-
-            // --- 新增：模态对话框功能 ---
+            // --- 以下是原HTML中的其他脚本逻辑 ---
+            // ... (联系模态框等逻辑保持不变) ...
             const contactModal = document.getElementById("contactModal");
             const contactLink = document.getElementById("contact-link");
             const mobileContactLink = document.getElementById("mobile-contact-link");
             const span = document.getElementsByClassName("close")[0];
 
-            // 当点击“联系”链接时，打开模态框
             contactLink.onclick = function(event) {
-                event.preventDefault(); // 阻止默认行为
+                event.preventDefault();
                 contactModal.style.display = "block";
             }
             mobileContactLink.onclick = function(event) {
-                event.preventDefault(); // 阻止默认行为
+                event.preventDefault();
                 contactModal.style.display = "block";
             }
 
-            // 当点击关闭按钮 (x) 时，关闭模态框
             span.onclick = function() {
                 contactModal.style.display = "none";
             }
 
-            // 当点击模态框外部区域时，关闭模态框
             window.onclick = function(event) {
                 if (event.target == contactModal) {
                     contactModal.style.display = "none";
                 }
             }
-            // --- 模态框功能结束 ---
-
         });
     </script>
 

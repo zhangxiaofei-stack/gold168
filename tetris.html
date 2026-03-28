@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>游戏 - 俄罗斯方块 - 大湾软件工作室</title>
+    <style>
+        /* --- 重用主站的全局样式 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px; /* 为固定导航栏预留空间 */
+            background-color: #ecf0f1; /* 游戏页面浅色背景 */
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* --- 导航栏样式 (与原主页一致) --- */
+        nav.desktop-nav {
+            background-color: #2c3e50;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s;
+        }
+        .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 手机端底部导航栏 --- */
+        nav.mobile-nav {
+            display: none;
+            background-color: #2c3e50;
+            padding: 0.75rem 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        .mobile-nav .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 0;
+        }
+        .mobile-nav .nav-menu {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+        .mobile-nav .nav-menu li {
+            flex: 1;
+            text-align: center;
+        }
+        .mobile-nav .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 0.5rem;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .mobile-nav .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 主要内容区样式 --- */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1rem; /* 减少标题下边距 */
+            font-size: 2.5rem;
+            color: #2c3e50;
+        }
+        .game-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+
+        /* --- 游戏容器样式 --- */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+
+        .game-board {
+            border: 2px solid #2c3e50;
+            background-color: #1a1a1a;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .score-panel {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .controls {
+            margin-top: 1.5rem;
+            text-align: center;
+            width: 100%;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 0 0.25rem;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn.start { background-color: #27ae60; }
+        .btn.start:hover { background-color: #2ecc71; }
+        .btn.pause { background-color: #f39c12; }
+        .btn.pause:hover { background-color: #e67e22; }
+        .btn.reset { background-color: #e74c3c; }
+        .btn.reset:hover { background-color: #c0392b; }
+
+        .instructions {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 0 5px 5px 0;
+            color: #555;
+            font-size: 0.95rem;
+            max-width: 100%;
+        }
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .instructions ul {
+            padding-left: 1.2rem;
+        }
+        .instructions li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* --- 页脚样式 (与原主页一致) --- */
+        footer.pc-footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        /* --- 手机端联系信息块 --- */
+        .mobile-contact-info {
+            display: none;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            margin-top: 3rem;
+        }
+        .mobile-contact-info p {
+            margin: 0.25rem 0;
+        }
+        .mobile-contact-info .highlight {
+            font-weight: bold;
+            color: #1abc9c;
+        }
+
+        /* --- 响应式设计 --- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding-top: 0;
+                padding-bottom: 60px; /* 为底部导航栏预留空间 */
+            }
+            nav.desktop-nav {
+                display: none;
+            }
+            nav.mobile-nav {
+                display: block;
+            }
+            .main-content {
+                padding: 0 1rem;
+                margin-top: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .game-container {
+                padding: 1.5rem;
+            }
+            .pc-footer {
+                display: none;
+            }
+            .mobile-contact-info {
+                display: block;
+            }
+        }
+
+        /* --- 新增：模态对话框样式 --- */
+        /* 模态背景遮罩 */
+        .modal {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            z-index: 2000; /* 确保在所有元素之上 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+            backdrop-filter: blur(5px); /* 背景模糊效果 (可选) */
+        }
+
+        /* 模态内容卡片 */
+        .modal-content {
+            background-color: white;
+            margin: 15% auto; /* 从顶部15%开始居中 */
+            padding: 2rem;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px; /* 最大宽度 */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out; /* 弹出动画 */
+        }
+
+        /* 关闭按钮 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+
+        /* 微信号图片样式 */
+        .wechat-qrcode {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 微信号文字 */
+        .wechat-id {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 1rem;
+        }
+
+        /* 模态对话框淡入动画 */
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PC端顶部导航栏 -->
+    <nav class="desktop-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Logo" class="logo-image" style="border-radius: 50%;">大湾软件工作室
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="index.html#about">关于</a></li>
+                <li><a href="index.html#cases">案例</a></li>
+                <li><a href="usage.html">使用说明</a></li> 
+                <li><a href="news.html">新闻资讯</a></li>
+                <li><a href="games.html">游戏中心</a></li> <!-- 更新导航链接 -->
+                <li><a href="#" id="contact-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 手机端底部导航栏 -->
+    <nav class="mobile-nav">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="usage.html">说明</a></li>
+                <li><a href="news.html">新闻</a></li>
+               
+                <li><a href="#contact" id="mobile-contact-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主要内容区 -->
+    <main class="main-content">
+        <h1>经典游戏</h1>
+        <h2 class="game-subtitle">Tetris / 俄罗斯方块</h2>
+        
+        <div class="game-container">
+            <div class="score-panel">
+                <div>得分: <span id="score">0</span></div>
+                <div>等级: <span id="level">1</span></div>
+                <div>消除: <span id="lines">0</span></div>
+            </div>
+            
+            <canvas id="game-board" width="300" height="600" class="game-board"></canvas>
+            
+            <div class="controls">
+                <button class="btn start" id="start-btn">开始</button>
+                <button class="btn pause" id="pause-btn" disabled>暂停</button>
+                <button class="btn reset" id="reset-btn">重置</button>
+            </div>
+
+            <div class="instructions">
+                <h3>游戏规则:</h3>
+                <ul>
+                    <li>使用键盘方向键 <strong>←, →</strong> 移动方块，<strong>↑</strong> 旋转方块，<strong>↓</strong> 加速下落。</li>
+                    <li>按 <strong>空格键</strong> 使方块直接坠落到最底端。</li>
+                    <li>填满一行使其消除，连续消除多行可获得更高分数。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- --- 手机端联系信息块 --- -->
+    <div class="mobile-contact-info">
+        <p><span class="highlight">地址:</span> 浙江省宁波市象山县</p>
+        <p><span class="highlight">微信:</span> jackGold168</p>
+    </div>
+
+    <!-- PC端页脚 -->
+    <footer class="pc-footer">
+        <p>&copy; 2026 大湾软件工作室. 保留所有权利.</p>
+        <p>地址: 浙江省宁波市象山县 | 微信: jackGold168</p>
+    </footer>
+
+    <!-- --- 新增：模态对话框 HTML 结构 --- -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>联系我们</h2>
+            <p>请扫描下方二维码添加微信</p>
+            <img src="88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode">
+            <p class="wechat-id">微信号: jackGold168</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 游戏常量
+            const COLS = 10;
+            const ROWS = 20;
+            const BLOCK_SIZE = 30;
+            const COLORS = [
+                null,
+                '#FF0D72', // I
+                '#0DC2FF', // J
+                '#0DFF72', // L
+                '#F538FF', // O
+                '#FF8E0D', // S
+                '#FFE138', // T
+                '#3877FF'  // Z
+            ];
+
+            // 7种方块的形状定义
+            const SHAPES = [
+                [],
+                [[0,0,0,0], [1,1,1,1], [0,0,0,0], [0,0,0,0]], // I
+                [[2,0,0], [2,2,2], [0,0,0]],                   // J
+                [[0,0,3], [3,3,3], [0,0,0]],                   // L
+                [[4,4], [4,4]],                                // O
+                [[0,5,5], [5,5,0], [0,0,0]],                   // S
+                [[0,6,0], [6,6,6], [0,0,0]],                   // T
+                [[7,7,0], [0,7,7], [0,0,0]]                    // Z
+            ];
+
+            // DOM 元素
+            const canvas = document.getElementById('game-board');
+            const ctx = canvas.getContext('2d');
+            const scoreElement = document.getElementById('score');
+            const levelElement = document.getElementById('level');
+            const linesElement = document.getElementById('lines');
+            const startBtn = document.getElementById('start-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const resetBtn = document.getElementById('reset-btn');
+
+            // 游戏变量
+            let board = createMatrix(COLS, ROWS);
+            // 使用一个函数来创建标准的方块对象，确保其结构完整
+            function createEmptyPiece() {
+                return {
+                    pos: {x: 0, y: 0}, // 确保 pos 永远存在
+                    matrix: [],
+                    type: 0
+                };
+            }
+            let player = createEmptyPiece(); // 初始化为空方块
+            let nextPiece = null;
+            let score = 0;
+            let lines = 0;
+            let level = 1;
+            let dropCounter = 0;
+            let dropInterval = 1000; // 初始下降间隔 (毫秒)
+            let lastTime = 0;
+            let isPaused = false;
+            let gameActive = false;
+            let gameLoopId = null;
+
+            // 创建一个空矩阵
+            function createMatrix(w, h) {
+                const matrix = [];
+                while (h--) {
+                    matrix.push(new Array(w).fill(0));
+                }
+                return matrix;
+            }
+
+            // 创建一个随机方块
+            function createPiece() {
+                const rand = Math.floor(Math.random() * 7) + 1;
+                return {
+                    pos: {x: 0, y: 0},
+                    matrix: SHAPES[rand],
+                    type: rand,
+                };
+            }
+
+            // 绘制单个方块
+            function drawBlock(matrix, offset) {
+                matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) {
+                            ctx.fillStyle = COLORS[value];
+                            ctx.fillRect((x + offset.x) * BLOCK_SIZE, (y + offset.y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                            
+                            ctx.strokeStyle = '#000';
+                            ctx.lineWidth = 1;
+                            ctx.strokeRect((x + offset.x) * BLOCK_SIZE, (y + offset.y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                        }
+                    });
+                });
+            }
+
+            // 绘制游戏板
+            function drawBoard() {
+                ctx.fillStyle = '#1a1a1a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                drawMatrix(board, {x: 0, y: 0});
+                
+                // 只有在游戏激活时才绘制活动的玩家方块
+                if(gameActive && player.matrix && player.matrix.length > 0) {
+                    drawBlock(player.matrix, player.pos);
+                }
+            }
+
+            // 绘制方块矩阵（游戏板或玩家方块）
+            function drawMatrix(matrix, offset) {
+                matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) {
+                            ctx.fillStyle = COLORS[value];
+                            ctx.fillRect((x + offset.x) * BLOCK_SIZE, (y + offset.y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                            
+                            ctx.strokeStyle = '#000';
+                            ctx.lineWidth = 1;
+                            ctx.strokeRect((x + offset.x) * BLOCK_SIZE, (y + offset.y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                        }
+                    });
+                });
+            }
+
+            // 检查碰撞
+            function collide(board, player) {
+                const [m, o] = [player.matrix, player.pos];
+                for (let y = 0; y < m.length; ++y) {
+                    for (let x = 0; x < m[y].length; ++x) {
+                        if (m[y][x] !== 0 &&
+                            (board[y + o.y] &&
+                             board[y + o.y][x + o.x]) !== 0) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            // 合并方块到游戏板
+            function merge(board, player) {
+                player.matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) {
+                            board[y + player.pos.y][x + player.pos.x] = value;
+                        }
+                    });
+                });
+            }
+
+            // 清除完整行
+            function sweepRows() {
+                let rowCount = 0;
+                outer: for (let y = board.length - 1; y >= 0; --y) {
+                    for (let x = 0; x < board[y].length; ++x) {
+                        if (board[y][x] === 0) {
+                            continue outer;
+                        }
+                    }
+
+                    const row = board.splice(y, 1)[0].fill(0);
+                    board.unshift(row);
+                    ++rowCount;
+                    ++y; // 检查新移下来的行
+                }
+                
+                if (rowCount > 0) {
+                    // 计分规则：一次性消多行得分更高
+                    const points = [0, 40, 100, 300, 1200]; 
+                    score += points[rowCount] * level;
+                    lines += rowCount;
+                    
+                    // 每消10行升一级
+                    level = Math.floor(lines / 10) + 1;
+                    
+                    // 难度随等级提升，下降速度加快
+                    dropInterval = Math.max(100, 1000 - (level - 1) * 100);
+
+                    updateScore();
+                }
+            }
+
+            // 玩家移动
+            function playerMove(dir) {
+                if (isPaused || !gameActive) return;
+                player.pos.x += dir;
+                if (collide(board, player)) {
+                    player.pos.x -= dir;
+                }
+            }
+
+            // 玩家旋转
+            function playerRotate() {
+                if (isPaused || !gameActive) return;
+                const pos = player.pos.x;
+                let offset = 1;
+                rotate(player.matrix);
+
+                while (collide(board, player)) {
+                    player.pos.x += offset;
+                    offset = -(offset + (offset > 0 ? 1 : -1));
+                    if (offset > player.matrix[0].length) {
+                        rotate(player.matrix); // 无法旋转则转回去
+                        player.pos.x = pos;
+                        return;
+                    }
+                }
+            }
+
+            // 矩阵旋转函数 (顺时针)
+            function rotate(matrix) {
+                for (let y = 0; y < matrix.length; ++y) {
+                    for (let x = 0; x < y; ++x) {
+                        [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+                    }
+                }
+                matrix.forEach(row => row.reverse());
+            }
+
+            // 玩家软降
+            function playerDrop() {
+                if (isPaused || !gameActive) return;
+                player.pos.y++;
+                if (collide(board, player)) {
+                    player.pos.y--;
+                    merge(board, player);
+                    playerReset();
+                    sweepRows();
+                }
+                dropCounter = 0;
+            }
+
+            // 玩家硬降 (直接坠落到底)
+            function playerHardDrop() {
+                if (isPaused || !gameActive) return;
+                while (!collide(board, {...player, pos: {x: player.pos.x, y: player.pos.y + 1}})) {
+                    player.pos.y++;
+                }
+                playerDrop(); // 触发合并和重置逻辑
+            }
+
+            // 重置玩家方块
+            function playerReset() {
+                // 将下一个方块赋给当前玩家方块
+                player.matrix = nextPiece.matrix;
+                player.type = nextPiece.type;
+                // 生成新的下一个方块
+                nextPiece = createPiece();
+
+                // 将方块放置在顶部中央
+                player.pos.y = 0;
+                player.pos.x = Math.floor((board[0].length - player.matrix[0].length) / 2);
+
+                // 检查游戏是否结束
+                if (collide(board, player)) {
+                    gameOver();
+                }
+            }
+
+            // 更新UI分数
+            function updateScore() {
+                scoreElement.textContent = score;
+                levelElement.textContent = level;
+                linesElement.textContent = lines;
+            }
+
+            // 游戏结束
+            function gameOver() {
+                cancelAnimationFrame(gameLoopId);
+                gameActive = false;
+                alert(`游戏结束！你的得分是: ${score}`);
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                pauseBtn.textContent = '暂停';
+            }
+
+            // 游戏循环
+            function update(time = 0) {
+                if (!gameActive) return;
+
+                const deltaTime = time - lastTime;
+                lastTime = time;
+
+                if (!isPaused) {
+                    dropCounter += deltaTime;
+                    if (dropCounter > dropInterval) {
+                        playerDrop();
+                    }
+                }
+
+                // 在每次循环中都重绘整个画面
+                drawBoard();
+                
+                gameLoopId = requestAnimationFrame(update);
+            }
+
+            // 开始游戏
+            function startGame() {
+                if (gameActive) return;
+                
+                resetGame();
+                gameActive = true;
+                isPaused = false;
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                pauseBtn.textContent = '暂停';
+                
+                // 在开始游戏时，先生成一个“下一个”方块
+                nextPiece = createPiece();
+                // 然后立即重置玩家方块，使其成为当前活动方块
+                playerReset();
+                
+                update(); // 启动游戏循环
+            }
+
+            // 暂停/继续游戏
+            function togglePause() {
+                if (!gameActive) return;
+                
+                isPaused = !isPaused;
+                pauseBtn.textContent = isPaused ? '继续' : '暂停';
+            }
+
+            // 重置游戏
+            function resetGame() {
+                cancelAnimationFrame(gameLoopId);
+                board = createMatrix(COLS, ROWS);
+                // 使用创建函数来重置 player，保证其结构完整性
+                player = createEmptyPiece();
+                nextPiece = null;
+                score = 0;
+                lines = 0;
+                level = 1;
+                dropInterval = 1000;
+                isPaused = false;
+                gameActive = false;
+                
+                updateScore();
+                drawBoard(); // 重置后重新绘制空白画布
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                pauseBtn.textContent = '暂停';
+            }
+
+            // 键盘控制
+            function handleKeyPress(e) {
+                if (!gameActive) return;
+                
+                switch (e.key) {
+                    case 'ArrowLeft':
+                        playerMove(-1);
+                        break;
+                    case 'ArrowRight':
+                        playerMove(1);
+                        break;
+                    case 'ArrowDown':
+                        playerDrop();
+                        break;
+                    case 'ArrowUp':
+                        playerRotate();
+                        break;
+                    case ' ':
+                        playerHardDrop();
+                        break;
+                    case 'p':
+                    case 'P':
+                        togglePause();
+                        break;
+                }
+            }
+
+            // 事件监听器
+            startBtn.addEventListener('click', startGame);
+            pauseBtn.addEventListener('click', togglePause);
+            resetBtn.addEventListener('click', resetGame);
+            document.addEventListener('keydown', handleKeyPress);
+
+            // 初始化游戏画面 (空白)
+            updateScore();
+            drawBoard();
+
+            // --- 以下为原HTML中的其他脚本逻辑 ---
+            const contactModal = document.getElementById("contactModal");
+            const contactLink = document.getElementById("contact-link");
+            const mobileContactLink = document.getElementById("mobile-contact-link");
+            const span = document.getElementsByClassName("close")[0];
+
+            contactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+            mobileContactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+
+            span.onclick = function() {
+                contactModal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == contactModal) {
+                    contactModal.style.display = "none";
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

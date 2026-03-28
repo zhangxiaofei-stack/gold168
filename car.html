@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>游戏 - 孤独的公路 - 大湾软件工作室</title>
+    <style>
+        /* --- 重用主站的全局样式 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px; /* 为固定导航栏预留空间 */
+            background-color: #ecf0f1; /* 游戏页面浅色背景 */
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* --- 导航栏样式 (与原主页一致) --- */
+        nav.desktop-nav {
+            background-color: #2c3e50;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s;
+        }
+        .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 手机端底部导航栏 --- */
+        nav.mobile-nav {
+            display: none;
+            background-color: #2c3e50;
+            padding: 0.75rem 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        .mobile-nav .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 0;
+        }
+        .mobile-nav .nav-menu {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+        .mobile-nav .nav-menu li {
+            flex: 1;
+            text-align: center;
+        }
+        .mobile-nav .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 0.5rem;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .mobile-nav .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 主要内容区样式 --- */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1rem; /* 减少标题下边距 */
+            font-size: 2.5rem;
+            color: #2c3e50;
+        }
+        .game-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+
+        /* --- 游戏容器样式 --- */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+
+        .game-board {
+            border: 2px solid #2c3e50;
+            background-color: #1a1a1a; /* 黑色背景，模拟夜晚公路 */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .score-panel {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .controls {
+            margin-top: 1.5rem;
+            text-align: center;
+            width: 100%;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 0 0.25rem;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn.start { background-color: #27ae60; }
+        .btn.start:hover { background-color: #2ecc71; }
+        .btn.pause { background-color: #f39c12; }
+        .btn.pause:hover { background-color: #e67e22; }
+        .btn.reset { background-color: #e74c3c; }
+        .btn.reset:hover { background-color: #c0392b; }
+
+        .instructions {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 0 5px 5px 0;
+            color: #555;
+            font-size: 0.95rem;
+            max-width: 100%;
+        }
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .instructions ul {
+            padding-left: 1.2rem;
+        }
+        .instructions li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* --- 页脚样式 (与原主页一致) --- */
+        footer.pc-footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        /* --- 手机端联系信息块 --- */
+        .mobile-contact-info {
+            display: none;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            margin-top: 3rem;
+        }
+        .mobile-contact-info p {
+            margin: 0.25rem 0;
+        }
+        .mobile-contact-info .highlight {
+            font-weight: bold;
+            color: #1abc9c;
+        }
+
+        /* --- 响应式设计 --- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding-top: 0;
+                padding-bottom: 60px; /* 为底部导航栏预留空间 */
+            }
+            nav.desktop-nav {
+                display: none;
+            }
+            nav.mobile-nav {
+                display: block;
+            }
+            .main-content {
+                padding: 0 1rem;
+                margin-top: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .game-container {
+                padding: 1.5rem;
+            }
+            .pc-footer {
+                display: none;
+            }
+            .mobile-contact-info {
+                display: block;
+            }
+        }
+
+        /* --- 新增：模态对话框样式 --- */
+        /* 模态背景遮罩 */
+        .modal {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            z-index: 2000; /* 确保在所有元素之上 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+            backdrop-filter: blur(5px); /* 背景模糊效果 (可选) */
+        }
+
+        /* 模态内容卡片 */
+        .modal-content {
+            background-color: white;
+            margin: 15% auto; /* 从顶部15%开始居中 */
+            padding: 2rem;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px; /* 最大宽度 */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out; /* 弹出动画 */
+        }
+
+        /* 关闭按钮 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+
+        /* 微信号图片样式 */
+        .wechat-qrcode {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 微信号文字 */
+        .wechat-id {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 1rem;
+        }
+
+        /* 模态对话框淡入动画 */
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PC端顶部导航栏 -->
+    <nav class="desktop-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Logo" class="logo-image" style="border-radius: 50%;">大湾软件工作室
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="index.html#about">关于</a></li>
+                <li><a href="index.html#cases">案例</a></li>
+                <li><a href="usage.html">使用说明</a></li> 
+                <li><a href="news.html">新闻资讯</a></li>
+                <li><a href="games.html">游戏中心</a></li> <!-- 更新导航链接 -->
+                <li><a href="#" id="contact-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 手机端底部导航栏 -->
+    <nav class="mobile-nav">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="usage.html">说明</a></li>
+                <li><a href="news.html">新闻</a></li>
+               
+                <li><a href="#contact" id="mobile-contact-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主要内容区 -->
+    <main class="main-content">
+        <h1>孤独的公路</h1>
+        <h2 class="game-subtitle">Lonely Highway / 驾驶挑战</h2>
+        
+        <div class="game-container">
+            <div class="score-panel">
+                <div>得分: <span id="score">0</span></div>
+                <div>等级: <span id="level">1</span></div>
+                <div>躲避: <span id="dodged">0</span></div>
+            </div>
+            
+            <canvas id="game-board" width="300" height="600" class="game-board"></canvas>
+            
+            <div class="controls">
+                <button class="btn start" id="start-btn">开始</button>
+                <button class="btn pause" id="pause-btn" disabled>暂停</button>
+                <button class="btn reset" id="reset-btn">重置</button>
+            </div>
+
+            <div class="instructions">
+                <h3>游戏规则:</h3>
+                <ul>
+                    <li>使用键盘方向键 <strong>←, →</strong> 控制您的老爷车在公路上左右移动。</li>
+                    <li>躲避从上方不断涌来的障碍物，撞上即游戏结束。</li>
+                    <li>每成功躲避一个障碍物，即可获得1分。分数越高，游戏越快！</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- --- 手机端联系信息块 --- -->
+    <div class="mobile-contact-info">
+        <p><span class="highlight">地址:</span> 浙江省宁波市象山县</p>
+        <p><span class="highlight">微信:</span> jackGold168</p>
+    </div>
+
+    <!-- PC端页脚 -->
+    <footer class="pc-footer">
+        <p>&copy; 2026 大湾软件工作室. 保留所有权利.</p>
+        <p>地址: 浙江省宁波市象山县 | 微信: jackGold168</p>
+    </footer>
+
+    <!-- --- 新增：模态对话框 HTML 结构 --- -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>联系我们</h2>
+            <p>请扫描下方二维码添加微信</p>
+            <img src="88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode">
+            <p class="wechat-id">微信号: jackGold168</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // DOM 元素
+            const canvas = document.getElementById('game-board');
+            const ctx = canvas.getContext('2d');
+            const scoreElement = document.getElementById('score');
+            const levelElement = document.getElementById('level');
+            const dodgedElement = document.getElementById('dodged');
+            const startBtn = document.getElementById('start-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const resetBtn = document.getElementById('reset-btn');
+
+            // 游戏常量
+            const ROAD_WIDTH = canvas.width;
+            const ROAD_HEIGHT = canvas.height;
+            const PLAYER_WIDTH = 30; // 代表一辆老爷车的宽度
+            const PLAYER_HEIGHT = 50; // 代表一辆老爷车的高度
+            const OBSTACLE_WIDTH = 35;
+            const OBSTACLE_HEIGHT = 35;
+            const PLAYER_SPEED = 5;
+            const INITIAL_OBSTACLE_SPEED = 2;
+
+            // 游戏变量
+            let player = { x: (ROAD_WIDTH - PLAYER_WIDTH) / 2, y: ROAD_HEIGHT - PLAYER_HEIGHT - 10 };
+            let obstacles = [];
+            let score = 0;
+            let dodged = 0;
+            let level = 1;
+            let obstacleSpeed = INITIAL_OBSTACLE_SPEED;
+            let isPaused = false;
+            let gameActive = false;
+            let gameLoopId = null;
+            let lastTime = 0;
+            let obstacleSpawnTimer = 0;
+            const OBSTACLE_SPAWN_INTERVAL = 60; // 帧数间隔
+
+            // 新增：用于绘制动态路面的变量
+            let roadOffset = 0; // 路面纹理的垂直偏移量
+            const roadMarkingHeight = 20; // 每段路标线的高度
+            const roadMarkingGap = 20; // 每段路标线之间的间距
+
+            // 绘制玩家车辆 (老爷车)
+            function drawPlayer() {
+                // 车身
+                ctx.fillStyle = '#d98c4a'; // 棕色，像辆旧车
+                ctx.fillRect(player.x, player.y, PLAYER_WIDTH, PLAYER_HEIGHT);
+                // 车窗
+                ctx.fillStyle = '#a0d2eb'; // 淡蓝色
+                ctx.fillRect(player.x + 5, player.y + 5, PLAYER_WIDTH - 10, 10);
+                // 车轮
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(player.x - 2, player.y + PLAYER_HEIGHT - 8, 7, 5);
+                ctx.fillRect(player.x + PLAYER_WIDTH - 5, player.y + PLAYER_HEIGHT - 8, 7, 5);
+            }
+
+            // 绘制障碍物 (路障或石头)
+            function drawObstacles() {
+                obstacles.forEach(obstacle => {
+                    // 障碍物主体
+                    ctx.fillStyle = '#7f8c8d'; // 灰色
+                    ctx.fillRect(obstacle.x, obstacle.y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
+                    // 障碍物细节 (裂纹)
+                    ctx.strokeStyle = '#2c3e50';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(obstacle.x + 5, obstacle.y + 5);
+                    ctx.lineTo(obstacle.x + OBSTACLE_WIDTH - 5, obstacle.y + OBSTACLE_HEIGHT - 5);
+                    ctx.moveTo(obstacle.x + OBSTACLE_WIDTH - 5, obstacle.y + 5);
+                    ctx.lineTo(obstacle.x + 5, obstacle.y + OBSTACLE_HEIGHT - 5);
+                    ctx.stroke();
+                });
+            }
+
+            // 绘制动态游戏背景 (滚动公路)
+            function drawBackground() {
+                // 绘制公路背景色
+                ctx.fillStyle = '#2c3e50'; // 深灰色公路
+                ctx.fillRect(0, 0, ROAD_WIDTH, ROAD_HEIGHT);
+                
+                // 绘制滚动的车道线
+                ctx.strokeStyle = '#ecf0f1';
+                ctx.lineWidth = 4;
+                ctx.setLineDash([roadMarkingHeight, roadMarkingGap]); // 虚线
+                
+                // 计算虚线的起始绘制点，使其看起来在滚动
+                const effectiveOffset = roadOffset % (roadMarkingHeight + roadMarkingGap);
+                
+                ctx.beginPath();
+                ctx.moveTo(ROAD_WIDTH / 2, -effectiveOffset);
+                ctx.lineTo(ROAD_WIDTH / 2, ROAD_HEIGHT - effectiveOffset);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(ROAD_WIDTH / 2 - 60, -effectiveOffset);
+                ctx.lineTo(ROAD_WIDTH / 2 - 60, ROAD_HEIGHT - effectiveOffset);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(ROAD_WIDTH / 2 + 60, -effectiveOffset);
+                ctx.lineTo(ROAD_WIDTH / 2 + 60, ROAD_HEIGHT - effectiveOffset);
+                ctx.stroke();
+
+                ctx.setLineDash([]); // 重置线条样式
+            }
+
+            // 检查碰撞
+            function checkCollision() {
+                for (let i = 0; i < obstacles.length; i++) {
+                    const o = obstacles[i];
+                    if (
+                        player.x < o.x + OBSTACLE_WIDTH &&
+                        player.x + PLAYER_WIDTH > o.x &&
+                        player.y < o.y + OBSTACLE_HEIGHT &&
+                        player.y + PLAYER_HEIGHT > o.y
+                    ) {
+                        return true; // 发生碰撞
+                    }
+                }
+                return false; // 未发生碰撞
+            }
+
+            // 生成一个新障碍物
+            function spawnObstacle() {
+                const x = Math.random() * (ROAD_WIDTH - OBSTACLE_WIDTH);
+                obstacles.push({
+                    x: x,
+                    y: -OBSTACLE_HEIGHT, // 从屏幕上方出现
+                });
+            }
+
+            // 更新游戏状态
+            function updateGameState(deltaTime) {
+                if (isPaused || !gameActive) return;
+
+                // 更新路面滚动效果
+                roadOffset += obstacleSpeed;
+
+                // 更新障碍物位置 (向下移动，模拟车子向前开)
+                for (let i = obstacles.length - 1; i >= 0; i--) {
+                    obstacles[i].y += obstacleSpeed;
+                    
+                    // 如果障碍物离开屏幕底部，移除它并计分
+                    if (obstacles[i].y > ROAD_HEIGHT) {
+                        obstacles.splice(i, 1);
+                        dodged++;
+                        score++;
+                        updateScore();
+                    }
+                }
+
+                // 生成新障碍物
+                obstacleSpawnTimer++;
+                if (obstacleSpawnTimer >= OBSTACLE_SPAWN_INTERVAL) {
+                    spawnObstacle();
+                    obstacleSpawnTimer = 0;
+                }
+
+                // 难度提升：根据得分增加速度和等级
+                level = Math.floor(score / 5) + 1;
+                obstacleSpeed = INITIAL_OBSTACLE_SPEED + (level - 1) * 0.2;
+
+                // 检查碰撞
+                if (checkCollision()) {
+                    gameOver(); // 如果碰撞，则游戏结束
+                }
+            }
+
+            // 绘制整个游戏画面
+            function draw() {
+                drawBackground(); // 首先绘制背景
+                drawObstacles();  // 然后绘制障碍物
+                drawPlayer();     // 最后绘制玩家车辆
+            }
+
+            // 游戏主循环
+            function gameLoop(timestamp) {
+                if (!gameActive) return;
+
+                const deltaTime = timestamp - lastTime;
+                lastTime = timestamp;
+
+                updateGameState(deltaTime);
+                draw();
+
+                gameLoopId = requestAnimationFrame(gameLoop);
+            }
+
+            // 更新UI分数
+            function updateScore() {
+                scoreElement.textContent = score;
+                levelElement.textContent = level;
+                dodgedElement.textContent = dodged;
+            }
+
+            // 游戏结束
+            function gameOver() {
+                cancelAnimationFrame(gameLoopId);
+                gameActive = false;
+                alert(`老爷车抛锚了！您在孤独公路上成功躲避了 ${dodged} 个障碍，最终得分: ${score}`);
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                pauseBtn.textContent = '暂停';
+            }
+
+            // 开始游戏
+            function startGame() {
+                if (gameActive) return;
+                
+                resetGame();
+                gameActive = true;
+                isPaused = false;
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                pauseBtn.textContent = '暂停';
+                
+                lastTime = performance.now();
+                gameLoop(performance.now()); // 启动游戏循环
+            }
+
+            // 暂停/继续游戏
+            function togglePause() {
+                if (!gameActive) return;
+                
+                isPaused = !isPaused;
+                pauseBtn.textContent = isPaused ? '继续' : '暂停';
+            }
+
+            // 重置游戏
+            function resetGame() {
+                cancelAnimationFrame(gameLoopId);
+                player = { x: (ROAD_WIDTH - PLAYER_WIDTH) / 2, y: ROAD_HEIGHT - PLAYER_HEIGHT - 10 };
+                obstacles = [];
+                score = 0;
+                dodged = 0;
+                level = 1;
+                obstacleSpeed = INITIAL_OBSTACLE_SPEED;
+                obstacleSpawnTimer = 0;
+                roadOffset = 0; // 重置路面滚动偏移
+                isPaused = false;
+                gameActive = false;
+                
+                updateScore();
+                draw(); // 重置后重新绘制画面
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                pauseBtn.textContent = '暂停';
+            }
+
+            // 键盘控制
+            function handleKeyPress(e) {
+                if (!gameActive || isPaused) return;
+                
+                switch (e.key) {
+                    case 'ArrowLeft':
+                        player.x = Math.max(0, player.x - PLAYER_SPEED);
+                        break;
+                    case 'ArrowRight':
+                        player.x = Math.min(ROAD_WIDTH - PLAYER_WIDTH, player.x + PLAYER_SPEED);
+                        break;
+                    case 'p': // P键暂停
+                    case 'P':
+                        togglePause();
+                        break;
+                }
+            }
+
+            // 事件监听器
+            startBtn.addEventListener('click', startGame);
+            pauseBtn.addEventListener('click', togglePause);
+            resetBtn.addEventListener('click', resetGame);
+            document.addEventListener('keydown', handleKeyPress);
+
+            // 初始化游戏画面 (空白)
+            draw();
+            updateScore();
+
+            // --- 以下为原HTML中的其他脚本逻辑 ---
+            const contactModal = document.getElementById("contactModal");
+            const contactLink = document.getElementById("contact-link");
+            const mobileContactLink = document.getElementById("mobile-contact-link");
+            const span = document.getElementsByClassName("close")[0];
+
+            contactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+            mobileContactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+
+            span.onclick = function() {
+                contactModal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == contactModal) {
+                    contactModal.style.display = "none";
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
