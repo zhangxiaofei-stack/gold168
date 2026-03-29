@@ -119,6 +119,7 @@
         .news-list {
             display: grid; /* 使用 Grid 布局 */
             grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); /* 自动适应，每列最小450px */
+            grid-template-rows: 1fr; /* 所有行（卡片）高度相同 */
             gap: 1.5rem; /* 项目之间的间距 */
         }
         .news-item {
@@ -128,6 +129,9 @@
             overflow: hidden; /* 防止图片溢出 */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
+            height: 100%; /* 确保卡片填满网格单元格 */
+            display: flex;
+            flex-direction: column;
         }
         .news-item:hover {
             transform: translateY(-5px);
@@ -140,11 +144,20 @@
         }
         .news-content {
             padding: 1.5rem;
+            flex-grow: 1; /* 让内容区域占据剩余空间 */
         }
         .news-title {
             font-size: 1.5rem;
             color: #2c3e50;
             margin-bottom: 0.5rem;
+        }
+        /* 为新闻标题链接添加样式 */
+        .news-title a {
+            text-decoration: none; /* 去除下划线 */
+            color: inherit;
+        }
+        .news-title a:hover {
+            color: #3498db;
         }
         .news-meta {
             display: flex;
@@ -156,6 +169,13 @@
         .news-excerpt {
             color: #555;
             line-height: 1.6;
+        }
+
+        /* --- 新增：新闻项链接样式，包裹整个卡片 --- */
+        .news-item-link {
+            text-decoration: none; /* 去除链接的下划线 */
+            display: block;
+            color: inherit;
         }
 
         /* --- 页脚样式 (与原主页一致) --- */
@@ -206,6 +226,7 @@
             /* 在手机端，Grid 回退为单列 */
             .news-list {
                 grid-template-columns: 1fr; /* 只显示一列 */
+                grid-template-rows: auto; /* 手机端恢复自动高度 */
             }
             .news-item {
                 margin-bottom: 1rem;
@@ -328,8 +349,25 @@
     <main class="main-content">
         <h1>新闻资讯</h1>
         <div class="news-list">
+			<!-- 修改：将第一个新闻项变成链接 -->
+            <a href="faqanswer.html" class="news-item-link">
+                <div class="news-item">
+                    <img src="./3a796ad62a65d72a8a73e8b9676efc073493262939654283.jpg" alt="外汇交易常见问题解答" class="news-image">
+                    <div class="news-content">
+                        <h2 class="news-title">外汇交易常见问题解答</h2>
+                        <div class="news-meta">
+                            <span>大湾软件工作室</span>
+                            <span>2026-03-29</span>
+                        </div>
+                        <p class="news-excerpt">
+                            想了解外汇交易的基础知识、策略和风险吗？点击标题查看我们精心整理的常见问题解答，助您快速入门。
+                        </p>
+                    </div>
+                </div>
+            </a>
+		
             <div class="news-item">
-                <img src="./2026-03-27 105241.png" alt="新闻配图" class="news-image">
+                <img src="./2026-03-27 105241.png" alt="黄金价格预测" class="news-image">
                 <div class="news-content">
                     <h2 class="news-title">黄金价格预测（1）</h2>
                     <div class="news-meta">
@@ -432,7 +470,11 @@
             // 为新闻条目添加点击事件（可选，例如跳转到详情页）
             const newsItems = document.querySelectorAll('.news-item');
             newsItems.forEach(item => {
-                item.addEventListener('click', function() {
+                item.addEventListener('click', function(e) {
+                    // 如果点击的是标题链接，阻止冒泡，让链接正常工作
+                    if (e.target.closest('.news-title a')) {
+                        return;
+                    }
                     // 这里可以添加点击后的逻辑，例如：
                     // window.location.href = 'news-detail.html?id=' + this.dataset.id;
                    // alert('已点击新闻: ' + this.querySelector('.news-title').textContent);

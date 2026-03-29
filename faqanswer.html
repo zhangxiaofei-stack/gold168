@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>外汇交易常见问题解答 - 大湾软件工作室</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+            /* 关键修改：移除body的padding，将其转换为.container的margin */
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .container {
+            max-width: 800px;
+            /* 关键修改：增加上下margin，替代原来的body padding */
+            margin: 80px auto 60px auto; 
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        h1 {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: #2c3e50;
+            color: white;
+            margin: 0;
+            font-size: 2.2rem;
+        }
+        .faq-item {
+            border-bottom: 1px solid #eee;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-question {
+            background-color: #f8f9fa;
+            padding: 20px 25px;
+            margin: 0;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        .faq-question:hover {
+            background-color: #edf2f7;
+        }
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: #3498db;
+        }
+        .faq-item.active .faq-question::after {
+            content: '−';
+            color: #e74c3c;
+        }
+        .faq-answer {
+            background-color: white;
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+            color: #555;
+            line-height: 1.7;
+        }
+        .faq-item.active .faq-answer {
+            padding: 20px 25px;
+            max-height: 1000px;
+        }
+        .back-to-home {
+            display: block;
+            text-align: center;
+            margin: 30px auto;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            width: fit-content;
+            transition: background-color 0.3s;
+        }
+        .back-to-home:hover {
+            background-color: #2980b9;
+        }
+
+        /* --- 导航栏样式 (与原主页一致) --- */
+        nav.desktop-nav {
+            background-color: #2c3e50;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s;
+        }
+        .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 手机端底部导航栏 --- */
+        nav.mobile-nav {
+            display: none;
+            background-color: #2c3e50;
+            padding: 0.75rem 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        .mobile-nav .nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 0;
+        }
+        .mobile-nav .nav-menu {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+        .mobile-nav .nav-menu li {
+            flex: 1;
+            text-align: center;
+        }
+        .mobile-nav .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 0.5rem;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .mobile-nav .nav-menu li a:hover {
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+
+        /* --- 手机端联系信息块 --- */
+        .mobile-contact-info {
+            display: none;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 1rem;
+        }
+        .mobile-contact-info p {
+            margin: 0.25rem 0;
+        }
+        .mobile-contact-info .highlight {
+            font-weight: bold;
+            color: #1abc9c;
+        }
+
+        /* --- 页脚样式 (与原主页一致) --- */
+        footer.pc-footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        /* --- 响应式设计 --- */
+        @media screen and (max-width: 768px) {
+            body {
+                /* 在移动端，为固定导航栏预留空间 */
+                padding-top: 0;
+                padding-bottom: 60px; /* 为底部固定导航栏预留空间 */
+            }
+            nav.desktop-nav {
+                display: none;
+            }
+            nav.mobile-nav {
+                display: block;
+            }
+            .main-content {
+                padding: 0 1rem;
+                margin-top: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .game-container {
+                padding: 1.5rem;
+            }
+            .pc-footer {
+                display: none;
+            }
+            .mobile-contact-info {
+                display: block;
+            }
+            .container {
+                margin-top: 1rem; /* 在移动端，减少顶部外边距 */
+                margin-bottom: 0; /* 在移动端，让内容紧贴底部导航 */
+            }
+        }
+
+        /* --- 模态对话框样式 --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+        .wechat-qrcode {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .wechat-id {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PC端顶部导航栏 -->
+    <nav class="desktop-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Logo" class="logo-image" style="border-radius: 50%;">大湾软件工作室
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="index.html#about">关于</a></li>
+                <li><a href="index.html#cases">案例</a></li>
+                <li><a href="usage.html">使用说明</a></li> 
+                <li><a href="news.html">新闻资讯</a></li>
+                <li><a href="games.html">游戏中心</a></li>
+                <li><a href="#" id="contact-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 手机端底部导航栏 -->
+    <nav class="mobile-nav">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html#home">首页</a></li>
+                <li><a href="index.html#services">服务</a></li>
+                <li><a href="usage.html">说明</a></li>
+                <li><a href="news.html">新闻</a></li>
+                <li><a href="#contact" id="mobile-contact-link">联系</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>外汇交易常见问题解答</h1>
+        
+        <div class="faq-list">
+            <!-- FAQ Item 1 -->
+            <div class="faq-item">
+                <h3 class="faq-question">什么是外汇交易？</h3>
+                <div class="faq-answer">
+                    <p>外汇交易（Forex或FX）是指在全球市场上买卖不同国家货币的行为。交易者通过预测一种货币相对于另一种货币的价值变化来进行投资，从中获取利润。例如，买入欧元/美元（EUR/USD），就是认为欧元相对于美元会升值。</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="faq-item">
+                <h3 class="faq-question">什么是杠杆？它有什么作用？</h3>
+                <div class="faq-answer">
+                    <p>杠杆是一种金融工具，允许交易者用少量的自有资金（保证金）来控制更大价值的头寸。例如，使用100:1的杠杆，您只需投入1000美元，就可以进行价值10万美元的交易。杠杆可以放大您的潜在收益，但同时也会同等程度地放大风险，可能导致本金损失，因此必须谨慎使用。</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="faq-item">
+                <h3 class="faq-question">什么是点差（Spread）？</h3>
+                <div class="faq-answer">
+                    <p>点差是买入价（Ask Price）和卖出价（Bid Price）之间的差额。它是做市商（通常是您的经纪商）的主要收入来源之一。当您开仓时，通常需要支付这个点差。点差越小，交易成本越低。不同的货币对和经纪商提供的点差可能不同。</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="faq-item">
+                <h3 class="faq-question">什么是止损单（Stop-Loss Order）和止盈单（Take-Profit Order）？</h3>
+                <div class="faq-answer">
+                    <p>这两种都是预先设定的订单类型，用于管理风险和锁定利润。<br><strong>止损单</strong>：当市场价格向不利于您持仓的方向移动到预设价位时，系统会自动平仓，以限制您的亏损。<br><strong>止盈单</strong>：当市场价格向有利于您持仓的方向移动到预设的盈利目标价位时，系统会自动平仓，以锁定利润。合理使用这两个工具是风险管理的重要组成部分。</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="faq-item">
+                <h3 class="faq-question">如何选择一个可靠的外汇经纪商？</h3>
+                <div class="faq-answer">
+                    <p>选择经纪商时，应重点考虑以下几点：<br>1. <strong>监管资质</strong>：确保经纪商受到如美国CFTC、英国FCA、澳洲ASIC等权威机构的严格监管。<br>2. <strong>资金安全</strong>：客户资金是否与公司运营资金隔离存放。<br>3. <strong>交易成本</strong>：包括点差、佣金等费用。<br>4. <strong>交易平台</strong>：软件是否稳定、功能是否齐全、用户体验如何。<br>5. <strong>客户服务</strong>：响应速度和专业水平。</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 6: 马丁格尔 -->
+            <div class="faq-item">
+                <h3 class="faq-question">什么是马丁格尔（Martingale）策略？它的优势和劣势是什么？</h3>
+                <div class="faq-answer">
+                    <p><strong>什么是马丁格尔策略：</strong><br>马丁格尔是一种经典的赌博和交易策略，其核心思想是在每次亏损后加倍下注，直到赢为止。在外汇交易中，这意味着当一笔交易亏损后，交易者会开一个相同方向但仓位更大的订单，目的是用后续的盈利来弥补之前的亏损并获得最初的预期利润。</p>
+                    <p><strong>优势：</strong><br>1. <strong>理论上的回本性</strong>：只要最终有一次盈利，就能收回之前所有的亏损并获得一次初始投注的利润。<br>2. <strong>简单易懂</strong>：策略逻辑非常直接，容易理解和执行。</p>
+                    <p><strong>劣势：</strong><br>1. <strong>巨大的资金风险</strong>：连续亏损会导致所需追加的资金呈指数级增长，可能迅速耗尽交易账户的所有资金（爆仓）。<br>2. <strong>市场趋势风险</strong>：在强劲的单边市场中，连续逆势加仓会导致巨大亏损，违背了“趋势是你的朋友”的交易原则。<br>3. <strong>心理压力</strong>：随着仓位不断加大，交易者承受的心理压力会急剧增加。因此，马丁格尔策略被普遍认为是高风险的，不建议普通投资者使用。</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 7: 网格 -->
+            <div class="faq-item">
+                <h3 class="faq-question">什么是网格（Grid）交易策略？它的优势和劣势是什么？</h3>
+                <div class="faq-answer">
+                    <p><strong>什么是网格策略：</strong><br>网格交易是一种在预设的价格区间内，按照固定的点位间隔挂出多个买单和卖单的策略。它假设市场会在一定范围内波动，通过在高点卖出、低点买入的方式，反复赚取其中的价差利润。</p>
+                    <p><strong>优势：</strong><br>1. <strong>行情适应性强</strong>：在震荡行情中表现尤为出色，能够持续地赚取波动带来的利润。<br>2. <strong>自动化程度高</strong>：设置好网格参数后，可以自动执行交易，无需时刻盯盘。<br>3. <strong>利用市场波动</strong>：不依赖于市场单边方向，而是从价格的来回波动中获利。</p>
+                    <p><strong>劣势：</strong><br>1. <strong>趋势行情风险</strong>：在强烈的单边上涨或下跌行情中，网格可能会不断累积单方向的仓位（例如，在下跌行情中不断买入），导致巨额浮亏甚至爆仓。<br>2. <strong>手续费累积</strong>：由于交易频繁，产生的点差和佣金成本会显著高于普通交易。<br>3. <strong>参数设置复杂</strong>：需要精确设定价格区间、网格密度和每单手数，不当的设置会影响策略效果。</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 8: EA -->
+            <div class="faq-item">
+                <h3 class="faq-question">什么样的EA才能稳定赚钱？有没有稳定赚钱的EA？</h3>
+                <div class="faq-answer">
+                    <p><strong>什么样的EA才能稳定赚钱：</strong><br>一个真正稳定的EA（Expert Advisor，即交易机器人）通常具备以下特征：<br>1. <strong>稳健的策略逻辑</strong>：基于成熟、经过长期验证的交易理论，而不是过度拟合历史数据的复杂算法。<br>2. <strong>完善的风险管理</strong>：拥有严格的止损、仓位控制和最大回撤限制机制，能有效保护资本。<br>3. <strong>适应性强</strong>：能够在不同的市场环境（如震荡、趋势）下运行，而不是只适用于单一行情。<br>4. <strong>透明的业绩记录</strong>：提供长期、真实的实盘交易记录，而非仅展示理想化的回测结果。</p>
+                    <p><strong>有没有稳定赚钱的EA：</strong><br>理论上，一个设计精良、经过充分验证的EA可以在特定市场条件下实现稳定盈利。然而，在现实中，不存在能够保证永远赚钱的EA。市场是动态变化的，任何策略都可能遇到失效期。许多声称“稳赚不赔”的EA往往是夸大宣传或存在高风险。因此，投资者应保持理性，将EA视为一种辅助工具，而非致富捷径，并对其业绩进行独立、严谨的评估。</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 9: 量化交易 -->
+            <div class="faq-item">
+                <h3 class="faq-question">什么是量化交易？量化交易能不能做？在MT4/MT5上怎么做量化交易？普通散户怎么做量化交易？</h3>
+                <div class="faq-answer">
+                    <p><strong>什么是量化交易：</strong><br>量化交易是利用数学模型和计算机程序来分析市场数据、生成交易信号并自动执行交易决策的一种方法。它将人的主观判断替换为客观的、可重复的规则，旨在提高交易效率和纪律性。</p>
+                    <p><strong>量化交易能不能做：</strong><br>可以。量化交易是一种合法且日益普及的交易方式，被全球众多专业机构和个人投资者广泛使用。对于个人投资者而言，关键在于掌握相关知识、开发或选用合适的策略，并具备相应的技术能力。</p>
+                    <p><strong>在MT4/MT5上怎么做量化交易：</strong><br>MetaTrader 4 (MT4) 和 MetaTrader 5 (MT5) 是最流行的零售外汇交易平台，它们支持使用MQL4和MQL5编程语言来编写EA（Expert Advisors）。您可以学习这些语言，自己开发交易策略，然后将其编译成EA文件加载到平台中，实现自动化交易。</p>
+                    <p><strong>普通散户怎么做量化交易：</strong><br>普通散户可以从以下几个步骤入手：<br>1. <strong>学习基础知识</strong>：学习基础的金融市场知识、统计学和编程（如MQL、Python等）。<br>2. <strong>选择平台</strong>：选择支持自动交易的券商和平台（如MT4/MT5）。<br>3. <strong>开发或研究策略</strong>：可以自己学习编程开发，也可以深入研究现有的免费或付费EA策略，理解其运作原理。<br>4. <strong>回测与模拟</strong>：在投入真金白银前，务必在历史数据上进行充分的回测，并在模拟环境中验证策略的有效性。<br>5. <strong>小资金试水</strong>：在实盘操作时，初期应使用较小的资金进行测试，观察其在真实市场中的表现。</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 10: EA和量化交易 -->
+            <div class="faq-item">
+                <h3 class="faq-question">用EA交易是不是量化交易？</h3>
+                <div class="faq-answer">
+                    <p>可以这么说，但不完全准确。两者关系如下：<br><strong>量化交易是一个更宏观的概念</strong>，指的是整个利用数据模型和程序化方法进行交易的过程，包括策略研究、数据分析、风险管理和绩效评估等多个环节。<br><strong>EA（专家顾问）是量化交易的一种实现工具</strong>，它是一个具体的计算机程序，用于执行预先设定好的交易规则。可以说，EA是量化交易思想落地执行的载体之一。<br>因此，使用EA进行交易是量化交易的一种常见形式，但量化交易不仅仅局限于使用EA，它还包括策略的设计、验证和优化等更广泛的领域。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- 手机端联系信息块 --- -->
+    <div class="mobile-contact-info">
+        <p><span class="highlight">地址:</span> 浙江省宁波市象山县</p>
+        <p><span class="highlight">微信:</span> jackGold168</p>
+    </div>
+
+    <!-- PC端页脚 -->
+    <footer class="pc-footer">
+        <p>&copy; 2026 大湾软件工作室. 保留所有权利.</p>
+        <p>地址: 浙江省宁波市象山县 | 微信: jackGold168</p>
+    </footer>
+
+    <!-- 模态对话框 -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>联系我们</h2>
+            <p>请扫描下方二维码添加微信</p>
+            <img src="./88d84cfe.jpg" alt="微信号二维码" class="wechat-qrcode">
+            <p class="wechat-id">微信号: jackGold168</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const faqItems = document.querySelectorAll('.faq-item');
+            const contactModal = document.getElementById("contactModal");
+            const contactLink = document.getElementById("contact-link");
+            const mobileContactLink = document.getElementById("mobile-contact-link");
+            const span = document.getElementsByClassName("close")[0];
+
+            // FAQ 交互逻辑
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                });
+            });
+
+            // 模态框逻辑
+            contactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+            mobileContactLink.onclick = function(event) {
+                event.preventDefault();
+                contactModal.style.display = "block";
+            }
+            span.onclick = function() {
+                contactModal.style.display = "none";
+            }
+            window.onclick = function(event) {
+                if (event.target == contactModal) {
+                    contactModal.style.display = "none";
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
